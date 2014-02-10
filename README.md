@@ -1,4 +1,4 @@
 jayScript
 =========
 
-a different approach
+A different approach
