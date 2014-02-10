@@ -1,0 +1,4 @@
+jayScript
+=========
+
+a different approach
