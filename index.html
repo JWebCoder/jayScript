@@ -1,0 +1,96 @@
+<html>
+<head>
+	<script type="text/javascript" src="jayScript.js"></script>
+	<script type="text/javascript">
+		j.onDomReady(function(){
+			j.loadGoogleFont({"Roboto":"300,400,700"});
+			j.createFloatingBox("#teste");
+			j.createFloatingBox("#teste2");
+			j.createFloatingBox("#teste3");
+			j.createFloatingBox("#teste4");
+			j.createFloatingBox("#teste5");
+			j.createFloatingBox("#teste6");
+			j.selectByClass("menuList").forEach(function(entry){
+				entry.onclick = function(){
+					j.showFloatingBox(entry.getAttribute("data-openBox"));
+				}
+			});
+			
+		});
+	</script>
+	<style>
+		*{
+			font-family:Roboto;
+			user-select: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			margin:0;
+			padding:0;
+		}
+		
+		.floatingBoxBar{
+			background-color:#bababa;
+			padding: 0.1% 1%;
+			cursor:pointer;
+			width:98%;
+		}
+		
+		#menu{
+			position:fixed;
+			top:10px;
+			left:10px;
+		}
+		
+		#menu .menuList{
+			cursor:pointer;
+		}
+		
+		ul li{
+			float:left;
+			margin-right:10px;
+		}
+		
+		.box{
+			position: fixed;
+			width: 300px;
+			height: 300px;
+			border:1px solid grey;
+			background-color:whitesmoke;
+		}
+	</style>
+</head>
+<body>
+	<div id="teste" class="box" style="left: 0px;top: 50px;">
+	</div>
+	<div id="teste2" class="box" style="left: 310px;top: 50px;">
+	</div>
+	<div id="teste3" class="box" style="left: 620px;top: 50px;">
+	</div>
+	<div id="teste4" class="box" style="left: 0px;top: 360px;">
+	</div>
+	<div id="teste5" class="box" style="left: 310px;top: 360px;">
+	</div>
+	<div id="teste6" class="box" style="left: 620px;top: 360px;">
+	</div>
+	<ul id="menu">
+		<li data-openBox="#teste" class="menuList">
+			Teste1
+		</li>
+		<li data-openBox="#teste2" class="menuList">
+			Teste2
+		</li>
+		<li data-openBox="#teste3" class="menuList">
+			Teste3
+		</li>
+		<li data-openBox="#teste4" class="menuList">
+			Teste4
+		</li>
+		<li data-openBox="#teste5" class="menuList">
+			Teste5
+		</li>
+		<li data-openBox="#teste6" class="menuList">
+			Teste6
+		</li>
+	</ul>
+</body>
+</html>
