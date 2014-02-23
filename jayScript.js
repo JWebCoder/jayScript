@@ -268,6 +268,68 @@ var j = {
         element.style.display = "block";
 		element.style.zIndex = 100;
 	},
+    
+    getQueryParams: function () {
+        "use strict";
+        
+        /*jslint regexp:true */
+        var qs = document.location.search.split("+").join(" "),
+            params = {},
+            tokens,
+            re = /[?&]?([^=]+)=([^&]*)/g;
+        /*jslint regexp:false */
+        
+        while ((tokens = re.exec(qs)) !== null) {
+            params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+        }
+        return params;
+    },
+    
+    throttle: function (fn, threshhold, scope) {
+        "use strict";
+        if (!threshhold) {
+            threshhold = 250;
+        }
+        var last,
+            deferTimer;
+        return function () {
+            var context = scope || this,
+                now,
+                args;
+
+            now = +new Date();
+            args = arguments;
+            if (last && now < last + threshhold) {
+              // hold on to it
+                clearTimeout(deferTimer);
+                deferTimer = setTimeout(function () {
+                    last = now;
+                    fn.apply(context, args);
+                }, threshhold);
+            } else {
+                last = now;
+                fn.apply(context, args);
+            }
+        };
+    },
+    
+    debounce: function (func, wait, immediate) {
+        "use strict";
+        var timeout;
+        return function () {
+            var context = this, args = arguments;
+            clearTimeout(timeout);
+            timeout = setTimeout(function () {
+                timeout = null;
+                if (!immediate) {
+                    func.apply(context, args);
+                }
+            }, wait);
+            if (immediate && !timeout) {
+                func.apply(context, args);
+            }
+        };
+    },
 	
 	loadGoogleFont: function (fonts) {
         "use strict";
@@ -304,10 +366,68 @@ var j = {
 		xmlhttp.open("GET", target, true);
 		xmlhttp.send();
 	},
-	
-	share: function (element) {
-		"use strict";
-        sharer = new SocialShare();
-        sharer.share(element);
-	}
+    share: function (element) {
+        "use strict";
+    },
+    socialShare: {
+        setTheme: function (targetElements, path, theme, invertTheme) {
+            "use strict";
+            var curronready,
+                newonready;
+            function imagesManager() {
+                var elems = document.getElementsByTagName('a'), i, images;
+                function MouseOverNoTheme() {
+                    this.getElementsByTagName('img')[0].src = this.getAttribute("data-image-button-over");
+                }
+                function MouseOutNoTheme() {
+                    this.getElementsByTagName('img')[0].src = this.getAttribute("data-image-button");
+                }
+                function MouseOverTheme() {
+                    if (invertTheme === true) {
+                        this.getElementsByTagName('img')[0].src = path + this.getAttribute("data-type") + ".png";
+                    } else {
+                        this.getElementsByTagName('img')[0].src = path + this.getAttribute("data-type") + "over.png";
+                    }
+                }
+                function MouseOutTheme() {
+                    if (invertTheme === true) {
+                        this.getElementsByTagName('img')[0].src = path + this.getAttribute("data-type") + "over.png";
+                    } else {
+                        this.getElementsByTagName('img')[0].src = path + this.getAttribute("data-type") + ".png";
+                    }
+                    
+                }
+                if (path === "") {
+                    for (i = 0; i < elems.length; i = i + 1) {
+                        if ((elems[i].className).indexOf(targetElements) > -1) {
+                            elems[i].getElementsByTagName('img')[0].src = elems[i].getAttribute("data-image-button");
+                            elems[i].onmouseover = MouseOverNoTheme;
+                            elems[i].onmouseout = MouseOutNoTheme;
+                        }
+                    }
+                } else {
+                    path = path + "/" + theme + "/";
+                    images = [];
+                    for (i = 0; i < elems.length; i = i + 1) {
+                        
+                        if ((elems[i].className).indexOf(targetElements) > -1) {
+                            images.push(new Image());
+                            if (invertTheme === true) {
+                                images[images.length - 1].src = path + elems[i].getAttribute("data-type") + ".png";
+                                elems[i].getElementsByTagName('img')[0].src = path + elems[i].getAttribute("data-type") + "over.png";
+                                elems[i].onmouseover = MouseOverTheme;
+                                elems[i].onmouseout = MouseOutTheme;
+                            } else {
+                                images[images.length - 1].src = path + elems[i].getAttribute("data-type") + "over.png";
+                                elems[i].getElementsByTagName('img')[0].src = path + elems[i].getAttribute("data-type") + ".png";
+                                elems[i].onmouseover = MouseOverTheme;
+                                elems[i].onmouseout = MouseOutTheme;
+                            }
+                        }
+                    }
+                }
+            }
+            imagesManager();
+        }
+    }
 };

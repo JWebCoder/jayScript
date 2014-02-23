@@ -36,25 +36,25 @@ var SocialShare = function (options) {
 			}
 			this.imageClass = options.imageManager;
 
-			var objectSSControl = this,
+			var self = this,
                 curronready,
                 newonready;
 			if (document.addEventListener) {
-				document.addEventListener('DOMContentLoaded', function () { objectSSControl.imagesManager(); });
+				document.addEventListener('DOMContentLoaded', function () { self.imagesManager(); });
 			} else {
 				if (document.onreadystatechange) {
                     curronready = document.onreadystatechange;
 					newonready = function () {
 						curronready();
 						if (document.readyState === "complete") {
-							objectSSControl.imagesManager();
+							self.imagesManager();
 						}
 					};
 					document.onreadystatechange = newonready;
 				} else {
 					document.onreadystatechange = function () {
 						if (document.readyState === "complete") {
-							objectSSControl.imagesManager();
+							self.imagesManager();
 						}
 					};
 				}
