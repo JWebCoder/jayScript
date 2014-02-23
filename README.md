@@ -21,9 +21,9 @@ Features list:
 -   [onDomReady](<#onDomReady>)
 -   [setFullBackground](<#setFullBackground>)
 -   [select](<#select>)
--   selectById
--   selectByClass
--   selectByTag
+-   [selectById](<#selectById>)
+-   [selectByClass](<#selectByClass>)
+-   [selectByTag](<#selectByTag>)
 -   nameType
 -   first
 -   createFloatingBox
@@ -86,3 +86,24 @@ targetElement can be:
 * #id - an id of an element
 * .class - a class of an element
 * tag - an element tag
+
+<a name="selectById"/> selectById
+-------------------------------
+
+    j.selectById(targetElement);
+
+targetElement is the id of the element
+
+<a name="selectByClass"/> selectByClass
+-------------------------------
+
+    j.selectByClass(targetElement);
+
+targetElement is the class of the element
+
+<a name="selectByTag"/> selectByTag
+-------------------------------
+
+    j.selectByTag(targetTag);
+
+targetTag is the tag of the element
