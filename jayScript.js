@@ -1,23 +1,8 @@
 /*jslint browser:true */
 var j = {
     moveFloatingBox : -1,
-	loadFile: function (items, fn) {
+	loadfile: function (items, fn) {
         "use strict";
-        function loadJs(fileName) {
-            var script;
-            script = document.createElement('script');
-            script.setAttribute("type", "text/javascript");
-            script.setAttribute("src", fileName);
-            return script;
-        }
-        function loadCss(fileName) {
-            var script;
-            script = document.createElement("link");
-            script.setAttribute("rel", "stylesheet");
-            script.setAttribute("type", "text/css");
-            script.setAttribute("href", fileName);
-            return script;
-        }
 		var counter = items.length, next = 0, i = 0, fileName, fileType, script;
         function callback(fn) {
             next = next + 1;
@@ -31,9 +16,9 @@ var j = {
 			script = undefined;
 			if (this.checkIfFileLoaded(fileName, fileType)) {
 				if (fileType === "js") {
-                    script = loadJs(fileName);
+                    script = this.loadJs(fileName);
 				} else if (fileType === "css") {
-					script = loadCss(fileName);
+					script = this.loadCss(fileName);
 				}
                 if (typeof script !== "undefined") {
                     if (fn) {
@@ -44,7 +29,23 @@ var j = {
 			}
 		}
 	},
-    
+    loadJs : function (fileName) {
+        "use strict";
+        var script;
+        script = document.createElement('script');
+        script.setAttribute("type", "text/javascript");
+        script.setAttribute("src", fileName);
+        return script;
+    },
+    loadCss : function (fileName) {
+        "use strict";
+        var script;
+        script = document.createElement("link");
+        script.setAttribute("rel", "stylesheet");
+        script.setAttribute("type", "text/css");
+        script.setAttribute("href", fileName);
+        return script;
+    },
 	checkIfFileLoaded: function (fileName, fileType) {
         "use strict";
         var elems = "", i;
@@ -335,7 +336,7 @@ var j = {
         var protocol, key;
 		protocol = ('https:' === document.location.protocol ? 'https' : 'http');
         for (key = 0; key < fonts.length; key = key + 1) {
-            this.loadFile([{'fileName': protocol + "://fonts.googleapis.com/css?family=" + key + ":" + fonts[key], 'fileType': 'css'}]);
+            this.loadfile([{'fileName': protocol + "://fonts.googleapis.com/css?family=" + key + ":" + fonts[key], 'fileType': 'css'}]);
         }
 	},
 	
