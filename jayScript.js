@@ -283,10 +283,10 @@ var j = {
         return params;
     },
     
-    throttle: function (fn, threshhold, scope) {
+    throttle: function (fn, threshold, scope) {
         "use strict";
-        if (!threshhold) {
-            threshhold = 250;
+        if (!threshold) {
+            threshold = 250;
         }
         var last,
             deferTimer;
@@ -297,13 +297,13 @@ var j = {
 
             now = +new Date();
             args = arguments;
-            if (last && now < last + threshhold) {
+            if (last && now < last + threshold) {
               // hold on to it
                 clearTimeout(deferTimer);
                 deferTimer = setTimeout(function () {
                     last = now;
                     fn.apply(context, args);
-                }, threshhold);
+                }, threshold);
             } else {
                 last = now;
                 fn.apply(context, args);
@@ -333,8 +333,11 @@ var j = {
         "use strict";
         var protocol, key;
 		protocol = ('https:' === document.location.protocol ? 'https' : 'http');
-        for (key = 0; key < fonts.length; key = key + 1) {
-            this.loadFile([{'fileName': protocol + "://fonts.googleapis.com/css?family=" + key + ":" + fonts[key], 'fileType': 'css'}]);
+        for (key in fonts) {
+            if (fonts.hasOwnProperty(key)) {
+                this.loadFile([{'fileName': protocol + "://fonts.googleapis.com/css?family=" + key + ":" + fonts[key], 'fileType': 'css'}]);
+            }
+            
         }
 	},
 	
@@ -366,7 +369,58 @@ var j = {
 	},
     share: function (element) {
         "use strict";
+        var url,
+            image,
+            title,
+            summary,
+            shareType,
+            imgUrl,
+            imgTitle,
+            width,
+            height;
+        url = element.getAttribute("data-url");
+        image = element.getAttribute("data-image");
+        title = element.getAttribute("data-title");
+        summary = element.getAttribute("data-summary");
+        shareType = element.getAttribute("data-share-type");
+        imgUrl = element.getAttribute("data-image");
+        imgTitle = element.getAttribute("data-image-title");
+        width = element.getAttribute("data-image-width");
+        height = element.getAttribute("data-image-height");
+        if (element.getAttribute("data-type") === "facebook") {
+            this.facebook(url, image, title, summary);
+        } else if (element.getAttribute("data-type") === "twitter") {
+            this.twitter(summary, url);
+        } else if (element.getAttribute("data-type") === "linkedin") {
+            this.linkedin(url, title, summary);
+        } else if (element.getAttribute("data-type") === "googleplus") {
+            this.googleplus(url);
+        } else if (element.getAttribute("data-type") === "googlebookmark") {
+            this.googlebookmark(url, title, summary);
+        } else if (element.getAttribute("data-type") === "pinterest") {
+            this.pinterest(url, image, summary);
+        } else if (element.getAttribute("data-type") === "tumblr") {
+            this.tumblr(url, title, summary, shareType, image);
+        } else if (element.getAttribute("data-type") === "delicious") {
+            this.delicious(url, title, summary);
+        } else if (element.getAttribute("data-type") === "reddit") {
+            this.reddit(url, title);
+        } else if (element.getAttribute("data-type") === "tapiture") {
+            this.tapiture(url, title, imgUrl, imgTitle, width, height);
+        } else if (element.getAttribute("data-type") === "stumbleupon") {
+            this.stumbleupon(url, title);
+        } else if (element.getAttribute("data-type") === "newsvine") {
+            this.newsvine(url, title);
+        }
     },
+    
+    strip: function (html) {
+        "use strict";
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html.replace("\\n", " ");
+        return tmp.textContent || tmp.innerText || "";
+    },
+    
     socialShare: {
         setTheme: function (targetElements, path, theme, invertTheme) {
             "use strict";
