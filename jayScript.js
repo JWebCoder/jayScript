@@ -367,51 +367,65 @@ var j = {
 		xmlhttp.open("GET", target, true);
 		xmlhttp.send();
 	},
+    publish: function (params) {
+        "use strict";
+        var link, windowParams;
+        if (params.socialTarget === "facebook") {
+            link = "https://www.facebook.com/sharer/sharer.php?s=100&p[url]=" + params.url + "&p[images][0]=" + encodeURIComponent(params.image) + "&p[title]=" + encodeURIComponent(params.title) + "&p[summary]=" + encodeURIComponent(this.strip(params.summary));
+        } else if (params.socialTarget === "twitter") {
+            link = "http://twitter.com/share?text=" + encodeURIComponent(this.strip(params.summary)) + "&url=" + params.url;
+        } else if (params.socialTarget === "linkedin") {
+            link = "http://www.linkedin.com/shareArticle?mini=true&url=" + params.url + "&title=" + params.title + "&summary=" + this.strip(params.summary);
+        } else if (params.socialTarget === "googleplus") {
+            link = "https://plus.google.com/share?url=" + params.url;
+        } else if (params.socialTarget === "googlebookmark") {
+            link = "http://www.google.com/bookmarks/mark?op=edit&bkmk=" + params.url + "&title=" + params.title + "&annotation=" + params.summary;
+        } else if (params.socialTarget === "pinterest") {
+            link = "http://pinterest.com/pin/create/button/?url=" + params.url + "&media=" + encodeURIComponent(params.image) + "&description=" + params.summary;
+        } else if (params.socialTarget === "tumblr") {
+            if (params.sharetype === "photo") {
+                link = "http://www.tumblr.com/share/photo?source=" + encodeURIComponent(params.image) + "&caption=" + params.summary + "&click_thru=" + encodeURIComponent(params.url);
+            } else {
+                link = "http://www.tumblr.com/share/link?url=" + encodeURIComponent(params.url) + "&name=" + params.title + "&description=" + params.summary;
+            }
+        } else if (params.socialTarget === "delicious") {
+            link = "http://delicious.com/post?url=" + params.url + "&title=" + params.title + "&notes=" + params.summary;
+        } else if (params.socialTarget === "reddit") {
+            link = "http://www.reddit.com/submit?url=" + params.url + "&title=" + params.title;
+        } else if (params.socialTarget === "tapiture") {
+            link = "http://tapiture.com/bookmarklet/image?img_src=" + params.image + "&page_url=" + params.url + "&page_title=" + params.title + "&img_title=" + params.imgTitle + "&img_width=" + params.width + "img_height=" + params.height;
+        } else if (params.socialTarget === "stumbleupon") {
+            link = "http://www.stumbleupon.com/submit?url=" + params.url + "&title=" + params.title;
+        } else if (params.socialTarget === "newsvine") {
+            link = "http://www.newsvine.com/_tools/seed&save?u=" + params.url + "&h=" + params.title;
+        }
+        if (link !== "") {
+            windowParams = "";
+            if (params.socialTarget === "tumblr") {
+                windowParams = "toolbar=0,status=0,width=800,height=500";
+            } else if (params.socialTarget === "googleplus") {
+                windowParams = "toolbar=0,status=0,width=600,height=600";
+
+            } else {
+                windowParams = "toolbar=0,status=0,width=626,height=436";
+            }
+            window.open(link, 'sharer', windowParams);
+        }
+    },
     share: function (element) {
         "use strict";
-        var url,
-            image,
-            title,
-            summary,
-            shareType,
-            imgUrl,
-            imgTitle,
-            width,
-            height;
-        url = element.getAttribute("data-url");
-        image = element.getAttribute("data-image");
-        title = element.getAttribute("data-title");
-        summary = element.getAttribute("data-summary");
-        shareType = element.getAttribute("data-share-type");
-        imgUrl = element.getAttribute("data-image");
-        imgTitle = element.getAttribute("data-image-title");
-        width = element.getAttribute("data-image-width");
-        height = element.getAttribute("data-image-height");
-        if (element.getAttribute("data-type") === "facebook") {
-            this.facebook(url, image, title, summary);
-        } else if (element.getAttribute("data-type") === "twitter") {
-            this.twitter(summary, url);
-        } else if (element.getAttribute("data-type") === "linkedin") {
-            this.linkedin(url, title, summary);
-        } else if (element.getAttribute("data-type") === "googleplus") {
-            this.googleplus(url);
-        } else if (element.getAttribute("data-type") === "googlebookmark") {
-            this.googlebookmark(url, title, summary);
-        } else if (element.getAttribute("data-type") === "pinterest") {
-            this.pinterest(url, image, summary);
-        } else if (element.getAttribute("data-type") === "tumblr") {
-            this.tumblr(url, title, summary, shareType, image);
-        } else if (element.getAttribute("data-type") === "delicious") {
-            this.delicious(url, title, summary);
-        } else if (element.getAttribute("data-type") === "reddit") {
-            this.reddit(url, title);
-        } else if (element.getAttribute("data-type") === "tapiture") {
-            this.tapiture(url, title, imgUrl, imgTitle, width, height);
-        } else if (element.getAttribute("data-type") === "stumbleupon") {
-            this.stumbleupon(url, title);
-        } else if (element.getAttribute("data-type") === "newsvine") {
-            this.newsvine(url, title);
-        }
+        var params;
+        params.url = element.getAttribute("data-url");
+        params.image = element.getAttribute("data-image");
+        params.title = element.getAttribute("data-title");
+        params.summary = element.getAttribute("data-summary");
+        params.shareType = element.getAttribute("data-share-type");
+        params.imgTitle = element.getAttribute("data-image-title");
+        params.width = element.getAttribute("data-image-width");
+        params.height = element.getAttribute("data-image-height");
+        params.socialTarget = element.getAttribute("data-type");
+        this.publish(params);
+        
     },
     
     strip: function (html) {
