@@ -135,17 +135,32 @@ targetString can be:
     element = j.select(targetElement);
     j.addClass("foo", element);
 
+targetElement can be:
+* #id - an id of an element
+* .class - a class of an element
+* tag - an element tag
+
 <a name="removeClass"/> removeClass
 -------------------------------
 
     element = j.select(targetElement);
     j.removeClass("foo", element);
 
+targetElement can be:
+* #id - an id of an element
+* .class - a class of an element
+* tag - an element tag
+
 <a name="hasClass"/> hasClass
 -------------------------------
     
     element = j.select(targetElement);
     console.log(j.hasClass("foo", element));
+
+targetElement can be:
+* #id - an id of an element
+* .class - a class of an element
+* tag - an element tag
 
 <a name="createFloatingBox"/> createFloatingBox
 -------------------------------
