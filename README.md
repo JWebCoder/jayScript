@@ -26,6 +26,9 @@ Features list:
 -   [selectByTag](<#selectByTag>)
 -   [nameType](<#nameType>)
 -   [first](<#first>)
+-   [addClass](<#addClass>)
+-   [removeClass](<#removeClass>)
+-   [hasClass](<#hasClass>)
 -   [createFloatingBox](<#createFloatingBox>)
 -   [showFloatingBox](<#showFloatingBox>)
 -   [getQueryParams](<#getQueryParams>)
@@ -125,6 +128,24 @@ targetString can be:
 
     elementList = j.select("div");
     first = j.first(elementList);
+
+<a name="addClass"/> addClass
+-------------------------------
+
+    element = j.select(targetElement);
+    j.addClass("foo", element);
+
+<a name="removeClass"/> removeClass
+-------------------------------
+
+    element = j.select(targetElement);
+    j.removeClass("foo", element);
+
+<a name="hasClass"/> hasClass
+-------------------------------
+    
+    element = j.select(targetElement);
+    console.log(j.hasClass("foo", element));
 
 <a name="createFloatingBox"/> createFloatingBox
 -------------------------------
