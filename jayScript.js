@@ -414,7 +414,7 @@ var j = {
     },
     share: function (element) {
         "use strict";
-        var params;
+        var params = {};
         params.url = element.getAttribute("data-url");
         params.image = element.getAttribute("data-image");
         params.title = element.getAttribute("data-title");
