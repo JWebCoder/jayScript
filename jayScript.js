@@ -176,6 +176,25 @@ var j = {
         }
 		return element;
 	},
+    
+    addClass: function (className, element) {
+        "use strict";
+        this.removeClass(className, element);
+        if (element.className.length === 0) {
+            element.className = className;
+        } else {
+            element.className = element.className + " " + className;
+        }
+    },
+    
+    removeClass: function (className, element) {
+        "use strict";
+        element.className = element.className.replace(" " + className, "");
+        element.className = element.className.replace(className, "");
+        if (element.className[0] === " ") {
+            element.className = element.className.substring(1);
+        }
+    },
 
     createFloatingBox : function (element) {
         "use strict";
