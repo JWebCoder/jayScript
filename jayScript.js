@@ -179,12 +179,19 @@ var j = {
     
     addClass: function (className, element) {
         "use strict";
-        this.removeClass(className, element);
-        if (element.className.length === 0) {
-            element.className = className;
-        } else {
-            element.className = element.className + " " + className;
+        var i;
+        className = className.split(" ");
+        for (i = 0; i < className.length; i = i + 1) {
+            if (this.hasClass(className[i], element)) {
+                this.removeClass(className[i], element);
+            }
+            if (element.className.length === 0) {
+                element.className = className[i];
+            } else {
+                element.className = element.className + " " + className[i];
+            }
         }
+        return element;
     },
     
     removeClass: function (className, element) {
@@ -194,6 +201,12 @@ var j = {
         if (element.className[0] === " ") {
             element.className = element.className.substring(1);
         }
+        return element;
+    },
+    
+    hasClass: function (className, element) {
+        "use strict";
+        return element.className.indexOf(className) > -1;
     },
 
     createFloatingBox : function (element) {
