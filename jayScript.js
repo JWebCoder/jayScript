@@ -190,16 +190,22 @@ var j = {
     
     addClass: function (className, element) {
         "use strict";
-        var i;
-        className = className.split(" ");
-        for (i = 0; i < className.length; i = i + 1) {
-            if (this.hasClass(className[i], element)) {
-                this.removeClass(className[i], element);
+        var i, elemI;
+        if (Object.prototype.toString.call(element) === '[object Array]') {
+            for (elemI = 0; elemI < element.length; elemI = elemI + 1) {
+                this.addClass(className, element[elemI]);
             }
-            if (element.className.length === 0) {
-                element.className = className[i];
-            } else {
-                element.className = element.className + " " + className[i];
+        } else {
+            className = className.split(" ");
+            for (i = 0; i < className.length; i = i + 1) {
+                if (this.hasClass(className[i], element)) {
+                    this.removeClass(className[i], element);
+                }
+                if (element.className.length === 0) {
+                    element.className = className[i];
+                } else {
+                    element.className = element.className + " " + className[i];
+                }
             }
         }
         return element;
@@ -207,10 +213,20 @@ var j = {
     
     removeClass: function (className, element) {
         "use strict";
-        element.className = element.className.replace(" " + className, "");
-        element.className = element.className.replace(className, "");
-        if (element.className[0] === " ") {
-            element.className = element.className.substring(1);
+        var i, elemI;
+        if (Object.prototype.toString.call(element) === '[object Array]') {
+            for (elemI = 0; elemI < element.length; elemI = elemI + 1) {
+                this.removeClass(className, element[elemI]);
+            }
+        } else {
+            className = className.split(" ");
+            for (i = 0; i < className.length; i = i + 1) {
+                element.className = element.className.replace(" " + className[i], "");
+                element.className = element.className.replace(className[i], "");
+                if (element.className[0] === " ") {
+                    element.className = element.className.substring(1);
+                }
+            }
         }
         return element;
     },

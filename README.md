@@ -157,13 +157,17 @@ targetString can be:
 <a name="addClass"/> addClass
 -------------------------------
 
-    element = j.select(targetElement);
-    j.addClass("foo", element);
+    elementList = j.select(targetElement);
+    j.addClass("foo", elementList);
 
 targetElement can be:
 * #id - an id of an element
 * .class - a class of an element
 * tag - an element tag
+
+elementList can be:
+* an array of elements
+* a single element
 
 <a name="removeClass"/> removeClass
 -------------------------------
@@ -176,6 +180,10 @@ targetElement can be:
 * .class - a class of an element
 * tag - an element tag
 
+elementList can be:
+* an array of elements
+* a single element
+
 <a name="hasClass"/> hasClass
 -------------------------------
     
@@ -186,6 +194,8 @@ targetElement can be:
 * #id - an id of an element
 * .class - a class of an element
 * tag - an element tag
+
+element must be a single element.
 
 <a name="createFloatingBox"/> createFloatingBox
 -------------------------------
