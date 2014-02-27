@@ -500,7 +500,7 @@ var j = {
                 }
                 if (path === "") {
                     for (i = 0; i < elems.length; i = i + 1) {
-                        if ((elems[i].className).indexOf(targetElements) > -1) {
+                        if (j.hasClass(targetElements, elems[i])) {
                             elems[i].getElementsByTagName('img')[0].src = elems[i].getAttribute("data-image-button");
                             elems[i].onmouseover = MouseOverNoTheme;
                             elems[i].onmouseout = MouseOutNoTheme;
@@ -510,8 +510,7 @@ var j = {
                     path = path + "/" + theme + "/";
                     images = [];
                     for (i = 0; i < elems.length; i = i + 1) {
-                        
-                        if ((elems[i].className).indexOf(targetElements) > -1) {
+                        if (j.hasClass(targetElements, elems[i])) {
                             images.push(new Image());
                             if (invertTheme === true) {
                                 images[images.length - 1].src = path + elems[i].getAttribute("data-type") + ".png";
