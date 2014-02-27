@@ -39,7 +39,7 @@ var j = {
                     if (fn) {
                         script.onreadystatechange = script.onload = callback(fn);
                     }
-					document.getElementsByTagName("head")[0].appendChild(script);
+					this.selectByTag("head")[0].appendChild(script);
 				}
 			}
 		}
@@ -48,14 +48,14 @@ var j = {
         "use strict";
         var elems = "", i;
 		if (fileType === "js") {
-			elems = document.getElementsByTagName('script');
+			elems = document.selectByTag('script');
 			for (i = 0; i < elems.length; i = i + 1) {
 				if ((elems[i].getAttribute("src")).indexOf(fileName) > -1) {
 				    return false;
 				}
 			}
 		} else if (fileType === "css") {
-            elems = document.getElementsByTagName('link');
+            elems = this.selectByTag('link');
 			for (i = 0; i < elems.length; i = i + 1) {
 				if ((elems[i].getAttribute("href")).indexOf(fileName) > -1) {
 				    return false;
@@ -125,26 +125,33 @@ var j = {
         element.style.backgroundSize = "cover";
     },
 
-    select: function (element) {
+    select: function (element, scope) {
         "use strict";
         if (this.nameType(element) === 0) {
-            element = this.selectById(element.substring(1));
+            element = this.selectById(element.substring(1), scope);
         } else if (this.nameType(element) === 1) {
-            element = this.selectByClass(element.substring(1));
+            element = this.selectByClass(element.substring(1), scope);
         } else if (this.nameType(element) === 2) {
-            element = this.selectByTag(element);
+            element = this.selectByTag(element, scope);
         }
         return element;
     },
 
-    selectById: function (element) {
+    selectById: function (element, scope) {
         "use strict";
-        return document.getElementById(element);
+        if (scope === undefined) {
+            return document.getElementById(element);
+        } else {
+            return scope.getElementById(element);
+        }
     },
 
-    selectByClass: function (element) {
+    selectByClass: function (element, scope) {
         "use strict";
-        var elements = document.getElementsByTagName('*'), i, result = [];
+        if (scope === undefined) {
+            scope = document;
+        }
+        var elements = j.selectByTag('*', scope), i, result = [];
         for (i = 0; i < elements.length; i = i + 1) {
             if ((' ' + elements[i].className + ' ').indexOf(' ' + element + ' ') > -1) {
                 result.push(elements[i]);
@@ -153,9 +160,13 @@ var j = {
         return result;
     },
 
-    selectByTag: function (element) {
+    selectByTag: function (element, scope) {
         "use strict";
-        return document.getElementsByTagName(element);
+        if (scope === undefined) {
+            return document.getElementsByTagName(element);
+        } else {
+            return scope.getElementsByTagName(element);
+        }
     },
 
     nameType: function (element) {
@@ -253,7 +264,7 @@ var j = {
 		
 		element = this.select(element);
         this.first(element);
-        topBar.className = topBar.className + " floatingBoxBar";
+        this.addClass("floatingBoxBar", topBar);
         topBar.addEventListener("mousedown", mouseDown, false);
         window.addEventListener('mouseup', mouseUp, false);
 		leftTopBar = document.createElement("div");
@@ -400,6 +411,13 @@ var j = {
 		xmlhttp.send();
 	},
     
+    strip: function (html) {
+        "use strict";
+        var tmp = document.createElement("DIV");
+        tmp.innerHTML = html.replace("\\n", " ");
+        return tmp.textContent || tmp.innerText || "";
+    },
+    
     share: function (element) {
         "use strict";
         var params = {};
@@ -416,23 +434,16 @@ var j = {
         
     },
     
-    strip: function (html) {
-        "use strict";
-        var tmp = document.createElement("DIV");
-        tmp.innerHTML = html.replace("\\n", " ");
-        return tmp.textContent || tmp.innerText || "";
-    },
-    
     socialShare: {
         publish: function (params) {
             "use strict";
             var link, windowParams;
             if (params.socialTarget === "facebook") {
-                link = "https://www.facebook.com/sharer/sharer.php?s=100&p[url]=" + params.url + "&p[images][0]=" + encodeURIComponent(params.image) + "&p[title]=" + encodeURIComponent(params.title) + "&p[summary]=" + encodeURIComponent(this.strip(params.summary));
+                link = "https://www.facebook.com/sharer/sharer.php?s=100&p[url]=" + params.url + "&p[images][0]=" + encodeURIComponent(params.image) + "&p[title]=" + encodeURIComponent(params.title) + "&p[summary]=" + encodeURIComponent(j.strip(params.summary));
             } else if (params.socialTarget === "twitter") {
-                link = "http://twitter.com/share?text=" + encodeURIComponent(this.strip(params.summary)) + "&url=" + params.url;
+                link = "http://twitter.com/share?text=" + encodeURIComponent(j.strip(params.summary)) + "&url=" + params.url;
             } else if (params.socialTarget === "linkedin") {
-                link = "http://www.linkedin.com/shareArticle?mini=true&url=" + params.url + "&title=" + params.title + "&summary=" + this.strip(params.summary);
+                link = "http://www.linkedin.com/shareArticle?mini=true&url=" + params.url + "&title=" + params.title + "&summary=" + j.strip(params.summary);
             } else if (params.socialTarget === "googleplus") {
                 link = "https://plus.google.com/share?url=" + params.url;
             } else if (params.socialTarget === "googlebookmark") {
@@ -474,7 +485,7 @@ var j = {
             var curronready,
                 newonready;
             function imagesManager() {
-                var elems = document.getElementsByTagName('a'), i, images;
+                var elems = j.selectByTag('a'), i, images;
                 function MouseOverNoTheme() {
                     this.getElementsByTagName('img')[0].src = this.getAttribute("data-image-button-over");
                 }

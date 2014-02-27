@@ -3,7 +3,7 @@ jayScript
 
 A new javascript framework for those who think the right way.
 
-jayScript framework V0.1
+jayScript framework V0.5
 ------------------------
 
 jayScript is a JavaScript library that provides a list of useful functions without extendind any built-in objects.
@@ -37,6 +37,7 @@ Features list:
 -   [loadGoogleFont](<#loadGoogleFont>)
 -   [isMobile](<#isMobile>)
 -   [get](<#get>)
+-   [strip](<#strip>)
 -   [share](<#share>)
 -   [socialShare](<#socialShare>)
    -   [setTheme](<#setTheme>)
@@ -45,7 +46,7 @@ Features list:
 -----------------------------
 
     j.loadFile([
-        {fileName:'teste.css',fileType:'css'},
+        {fileName:'foo.css',fileType:'css'},
         {fileName:'jquery.js',fileType:'js'}],
         function(){
             console.log("loaded");
@@ -54,7 +55,7 @@ Features list:
 <a name="checkIfFileLoaded"/> checkIfFileLoaded
 -----------------------------------------------
 
-    j.checkIfFileLoaded('teste.css','css');
+    j.checkIfFileLoaded('foo.css','css');
 
 <a name="onPageLoaded"/> onPageLoaded
 -------------------------------------
@@ -85,31 +86,55 @@ targetElement can be:
 
     j.select(targetElement);
 
+Or
+
+    j.select(targetElement, scope);
+
 targetElement can be:
 * #id - an id of an element
 * .class - a class of an element
 * tag - an element tag
+
+scope is the element where the select will occur
 
 <a name="selectById"/> selectById
 -------------------------------
 
     j.selectById(targetElement);
 
+Or
+
+    j.selectById(targetElement, scope);
+
 targetElement is the id of the element
+
+scope is the element where the select will occur
 
 <a name="selectByClass"/> selectByClass
 -------------------------------
 
     j.selectByClass(targetElement);
 
+Or
+
+    j.selectByClass(targetElement, scope);
+
 targetElement is the class of the element
+
+scope is the element where the select will occur
 
 <a name="selectByTag"/> selectByTag
 -------------------------------
 
     j.selectByTag(targetTag);
 
+Or
+
+    j.selectByTag(targetTag, scope);
+
 targetTag is the tag of the element
+
+scope is the element where the select will occur
 
 <a name="nameType"/> nameType
 -------------------------------
@@ -222,8 +247,22 @@ targetElement can be:
 <a name="get"/> get
 -------------------------------
 
-    j.get("teste.php",function () { callback(a,b); });
+    j.get("foo.php",function () { callback(a,b); });
     
+<a name="strip"/> strip
+-------------------------------
+
+    html = j.strip(html);
+
+html is the html code to be stripped
+
+<a name="share"/> share
+-------------------------------
+
+    j.share(element);
+
+The element must contain the right attributes.
+
 <a name="socialShare"/> socialShare
 -------------------------------
 
