@@ -2,7 +2,6 @@
 /*jslint node: true */
 "use strict";
 var j = {
-    moveFloatingBox : -1,
 	loadFile: function (items, fn) {
         function loadJs(fileName) {
             var script;
