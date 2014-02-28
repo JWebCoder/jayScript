@@ -104,9 +104,9 @@ var j = {
 			}
 		}
 	},
-    addEvent :function (html_element, event_name, event_function) {       
+    addEvent : function (html_element, event_name, event_function) {
         if (html_element.attachEvent) {
-            html_element.attachEvent("on" + event_name, function() {
+            html_element.attachEvent("on" + event_name, function () {
                 event_function.call(html_element);
             });
         } else if (html_element.addEventListener) {
