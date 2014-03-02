@@ -241,9 +241,9 @@ var j = {
             text,
             clearTopBar;
         function moveBox(e) {
-			if (!stopMove) {
-				topBar.parentNode.style.top = e.clientY - topBar.top;
-				topBar.parentNode.style.left = e.clientX - topBar.left;
+            if (!stopMove) {
+				topBar.parentNode.style.top = e.clientY - topBar.top + "px";
+				topBar.parentNode.style.left = e.clientX - topBar.left + "px";
 			}
         }
         function mouseUp(e) {
