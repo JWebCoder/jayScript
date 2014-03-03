@@ -229,7 +229,17 @@ var j = {
     },
     
     hasClass: function (className, element) {
-        return element.className.indexOf(className) > -1;
+        var classList,
+            i,
+            len;
+        classList = element.className.split(" ");
+        len = classList.length;
+        for (i = 0; i < len; i = i + 1) {
+            if (className === classList[i]) {
+                return true;
+            }
+        }
+        return false;
     },
 
     createFloatingBox : function (element) {
