@@ -37,9 +37,15 @@ var j = {
 				}
                 if (typeof script !== "undefined") {
                     if (fn) {
-                        script.onreadystatechange = script.onload = callback(fn);
+                        if(script.addEventListener) {
+                            script.addEventListener("load",function(){ callback(fn); },false);
+                        } 
+                        else if(script.readyState) {
+                            script.onreadystatechange = callback(fn);
+                        }
                     }
 					this.selectByTag("head")[0].appendChild(script);
+                    
 				}
 			}
 		}
@@ -47,11 +53,13 @@ var j = {
 	checkIfFileLoaded: function (fileName, fileType) {
         var elems = "", i;
 		if (fileType === "js") {
-			elems = document.selectByTag('script');
+			elems = this.selectByTag('script');
 			for (i = 0; i < elems.length; i = i + 1) {
-				if ((elems[i].getAttribute("src")).indexOf(fileName) > -1) {
-				    return false;
-				}
+                if (elems[i].getAttribute("src") !== null) {
+                    if ((elems[i].getAttribute("src")).indexOf(fileName) > -1) {
+                        return false;
+                    }
+                }
 			}
 		} else if (fileType === "css") {
             elems = this.selectByTag('link');
