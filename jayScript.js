@@ -19,7 +19,7 @@ var j = {
             return script;
         }
 		var counter = items.length, next = 0, i = 0, fileName, fileType, script;
-        function callback(fn) {
+        function callback() {
             next = next + 1;
             if (counter === next) {
                 fn();
@@ -37,11 +37,10 @@ var j = {
 				}
                 if (typeof script !== "undefined") {
                     if (fn) {
-                        if(script.addEventListener) {
-                            script.addEventListener("load",function(){ callback(fn); },false);
-                        } 
-                        else if(script.readyState) {
-                            script.onreadystatechange = callback(fn);
+                        if (script.addEventListener) {
+                            script.addEventListener("load", callback, false);
+                        } else if (script.readyState) {
+                            script.onreadystatechange = callback;
                         }
                     }
 					this.selectByTag("head")[0].appendChild(script);
