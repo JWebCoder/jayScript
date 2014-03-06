@@ -160,10 +160,14 @@ var j = {
         if (scope === undefined) {
             scope = document;
         }
-        var elements = j.selectByTag('*', scope), i, result = [];
-        for (i = 0; i < elements.length; i = i + 1) {
-            if ((' ' + elements[i].className + ' ').indexOf(' ' + element + ' ') > -1) {
-                result.push(elements[i]);
+        if (scope.getElementsByClassName) {
+            return scope.getElementsByClassName(element);
+        } else {
+            var result = [], elements = j.selectByTag('*', scope), i;
+            for (i = 0; i < elements.length; i = i + 1) {
+                if ((' ' + elements[i].className + ' ').indexOf(' ' + element + ' ') > -1) {
+                    result.push(elements[i]);
+                }
             }
         }
         return result;
@@ -239,14 +243,19 @@ var j = {
         var classList,
             i,
             len;
-        classList = element.className.split(" ");
-        len = classList.length;
-        for (i = 0; i < len; i = i + 1) {
-            if (className === classList[i]) {
-                return true;
+        if (element.classList) {
+            return element.classList.contains(className);
+            
+        } else {
+            classList = element.className.split(" ");
+            len = classList.length;
+            for (i = 0; i < len; i = i + 1) {
+                if (className === classList[i]) {
+                    return true;
+                }
             }
+            return false;
         }
-        return false;
     },
 
     createFloatingBox : function (element) {
