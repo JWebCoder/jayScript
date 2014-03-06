@@ -169,8 +169,8 @@ var j = {
                     result.push(elements[i]);
                 }
             }
+            return result;
         }
-        return result;
     },
 
     selectByTag: function (element, scope) {
@@ -244,8 +244,7 @@ var j = {
             i,
             len;
         if (element.classList) {
-            return element.classList.contains(className);
-            
+            return [].push(element.classList.contains(className));
         } else {
             classList = element.className.split(" ");
             len = classList.length;
