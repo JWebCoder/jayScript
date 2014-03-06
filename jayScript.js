@@ -163,9 +163,9 @@ var j = {
         var result = [], elements, i, nodeList;
         if (scope.getElementsByClassName) {
             nodeList = scope.getElementsByClassName(element);
-            for (i = 0; i < nodeList.length; i = i + 1) {
+            for (i = 0 ; i < nodeList.length; i = i + 1) {
                 result.push(nodeList[i]);
-            }
+            } 
             return result;
         } else {
             elements = j.selectByTag('*', scope);
@@ -249,7 +249,7 @@ var j = {
             i,
             len;
         if (element.classList) {
-            return [].push(element.classList.contains(className));
+            return element.classList.contains(className);
         } else {
             classList = element.className.split(" ");
             len = classList.length;
