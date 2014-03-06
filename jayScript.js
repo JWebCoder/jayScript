@@ -160,10 +160,15 @@ var j = {
         if (scope === undefined) {
             scope = document;
         }
+        var result = [], elements, i, nodeList;
         if (scope.getElementsByClassName) {
-            return scope.getElementsByClassName(element);
+            nodeList = scope.getElementsByClassName(element);
+            for (i = 0; i < nodeList.length; i = i + 1) {
+                result.push(nodeList[i]);
+            }
+            return result;
         } else {
-            var result = [], elements = j.selectByTag('*', scope), i;
+            elements = j.selectByTag('*', scope);
             for (i = 0; i < elements.length; i = i + 1) {
                 if ((' ' + elements[i].className + ' ').indexOf(' ' + element + ' ') > -1) {
                     result.push(elements[i]);
