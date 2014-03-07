@@ -211,14 +211,20 @@ var j = {
             }
         } else {
             className = className.split(" ");
-            for (i = 0; i < className.length; i = i + 1) {
-                if (this.hasClass(className[i], element)) {
-                    this.removeClass(className[i], element);
+            if (element.classList) {
+                for (i = 0; i < className.length; i = i + 1) {
+                    element.classList.add(className[i]);
                 }
-                if (element.className.length === 0) {
-                    element.className = className[i];
-                } else {
-                    element.className = element.className + " " + className[i];
+            } else {
+                for (i = 0; i < className.length; i = i + 1) {
+                    if (this.hasClass(className[i], element)) {
+                        this.removeClass(className[i], element);
+                    }
+                    if (element.className.length === 0) {
+                        element.className = className[i];
+                    } else {
+                        element.className = element.className + " " + className[i];
+                    }
                 }
             }
         }
@@ -233,11 +239,17 @@ var j = {
             }
         } else {
             className = className.split(" ");
-            for (i = 0; i < className.length; i = i + 1) {
-                element.className = element.className.replace(" " + className[i], "");
-                element.className = element.className.replace(className[i], "");
-                if (element.className[0] === " ") {
-                    element.className = element.className.substring(1);
+            if (element.classList) {
+                for (i = 0; i < className.length; i = i + 1) {
+                    element.classList.remove(className[i]);
+                }
+            } else {
+                for (i = 0; i < className.length; i = i + 1) {
+                    element.className = element.className.replace(" " + className[i], "");
+                    element.className = element.className.replace(className[i], "");
+                    if (element.className[0] === " ") {
+                        element.className = element.className.substring(1);
+                    }
                 }
             }
         }
