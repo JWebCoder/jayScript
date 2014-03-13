@@ -111,22 +111,22 @@ var j = {
 		}
 	},
     addEvent : function (html_element, event_name, event_function) {
-        if (html_element.attachEvent) {
+        if (html_element.addEventListener) {
+            html_element.addEventListener(event_name, event_function, false);
+        } else if (html_element.attachEvent) {
             html_element.attachEvent("on" + event_name, function () {
                 event_function.call(html_element);
             });
-        } else if (html_element.addEventListener) {
-            html_element.addEventListener(event_name, event_function, false);
         }
     },
     
     removeEvent : function (html_element, event_name, event_function) {
-        if (html_element.detachEvent) {
+        if (html_element.removeEventListener) {
+            html_element.removeEventListener(event_name, event_function, false);
+        } else if (html_element.detachEvent) {
             html_element.detachEvent("on" + event_name, function () {
                 event_function.call(html_element);
             });
-        } else if (html_element.removeEventListener) {
-            html_element.removeEventListener(event_name, event_function, false);
         }
     },
     
