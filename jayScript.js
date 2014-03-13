@@ -120,6 +120,16 @@ var j = {
         }
     },
     
+    removeEvent : function (html_element, event_name, event_function) {
+        if (html_element.detachEvent) {
+            html_element.detachEvent("on" + event_name, function () {
+                event_function.call(html_element);
+            });
+        } else if (html_element.removeEventListener) {
+            html_element.removeEventListener(event_name, event_function, false);
+        }
+    },
+    
     setFullBackground : function (link, target) {
         var element;
         target = typeof target !== 'undefined' ? target : "html";
