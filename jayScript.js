@@ -440,7 +440,54 @@ var j = {
             
         }
 	},
-	
+    
+    loadFont: function (fonts) {
+        var styleElement = document.createElement("style");
+        styleElement.setAttribute("type", "text/css");
+        if(fonts.light !== undefined) {
+            styleElement.innerHTML += "@font-face{\nfont-family: '" + fonts.name + "';\nfont-weight:300;\nsrc: url(";
+            if(fonts.light.otf !== undefined) {
+                styleElement.innerHTML += "fonts/" + fonts.light.otf + ");";
+            }
+            styleElement.innerHTML += "\n}\n";
+        }
+        if(fonts.normal !== undefined) {
+            styleElement.innerHTML += "@font-face{\nfont-family: '" + fonts.name + "';\nfont-weight:400;\nsrc: url(";
+            if(fonts.normal.otf !== undefined) {
+                styleElement.innerHTML += "fonts/" + fonts.normal.otf + ");";
+            }
+            styleElement.innerHTML += "\n}\n";
+        }
+        if(fonts.bold !== undefined) {
+            styleElement.innerHTML += "@font-face{\nfont-family: '" + fonts.name + "';\nfont-weight:700;\nsrc: url(";
+            if(fonts.bold.otf !== undefined) {
+                styleElement.innerHTML += "fonts/" + fonts.bold.otf + ");";
+            }
+            styleElement.innerHTML += "\n}\n";
+        }
+        this.selectByTag("head")[0].appendChild(styleElement);
+	},
+    
+/*    <style> 
+@font-face
+{
+font-family: myFirstFont;
+src: url(sansation_light.woff);
+}
+
+@font-face
+{
+font-family: myFirstFont;
+src: url(sansation_bold.woff);
+
+}
+
+div
+{
+font-family:myFirstFont;
+}
+</style>
+	*/
 	isMobile: function () {
         var agent;
 		agent = navigator.userAgent || navigator.vendor || window.opera;
