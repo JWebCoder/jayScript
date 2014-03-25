@@ -47,6 +47,7 @@ Features list:
 
     j.loadFile([
         {fileName:'foo.css',fileType:'css'},
+        {fileName:'bar.css',fileType:'css', condition: function() { return true; }},
         {fileName:'jquery.js',fileType:'js'}],
         function(){
             console.log("loaded");
