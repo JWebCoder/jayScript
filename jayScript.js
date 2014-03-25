@@ -26,9 +26,16 @@ var j = {
             }
         }
         for (i = 0; i < items.length; i = i + 1) {
-			fileName = items[i].fileName;
-			fileType = items[i].fileType;
-			script = undefined;
+            var condition = true;
+            fileName = items[i].fileName;
+            fileType = items[i].fileType;
+            if (items[i].condition !== undefined) {
+                condition = items[i].condition();
+            }
+            if (!condition) {
+                continue;
+            }
+            script = undefined;
 			if (this.checkIfFileLoaded(fileName, fileType)) {
 				if (fileType === "js") {
                     script = loadJs(fileName);
