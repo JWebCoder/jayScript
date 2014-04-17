@@ -312,6 +312,14 @@ var j = {
         }
     },
     
+    toggleClass: function (className, element) {
+        if (this.hasClass(className, element)) {
+            this.removeClass(className, element);
+        } else {
+            this.addClass(className, element);
+        }
+    },
+    
     getStyle: function (element, property) {
         if (window.getComputedStyle !== undefined) {
             return window.getComputedStyle(element, null).getPropertyValue(property);
