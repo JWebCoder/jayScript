@@ -1,11 +1,13 @@
 /*jslint browser:true */
 /*jslint node: true */
-"use strict";
+/*global j */
+'use strict';
 var j = {
 	loadFile: function (items, fn) {
         function loadJs(fileName) {
             var script;
             script = document.createElement('script');
+            script.async = true;
             script.setAttribute("type", "text/javascript");
             script.setAttribute("src", fileName);
             return script;
@@ -13,6 +15,7 @@ var j = {
         function loadCss(fileName) {
             var script;
             script = document.createElement("link");
+            script.async = true;
             script.setAttribute("rel", "stylesheet");
             script.setAttribute("type", "text/css");
             script.setAttribute("href", fileName);
@@ -173,6 +176,7 @@ var j = {
         var result = [], elements, i, nodeList;
         if (scope.getElementsByClassName) {
             nodeList = scope.getElementsByClassName(element);
+            nodeList = [].slice.call(nodeList);
             for (i = 0; i < nodeList.length; i = i + 1) {
                 result.push(nodeList[i]);
             }
@@ -189,11 +193,35 @@ var j = {
     },
 
     selectByTag: function (element, scope) {
+        var elements, result = [], i;
         if (scope === undefined) {
-            return document.getElementsByTagName(element);
+            elements = document.getElementsByTagName(element);
+            for (i = 0; i < elements.length; i = i + 1) {
+                result.push(elements[i]);
+            }
         } else {
-            return scope.getElementsByTagName(element);
+            elements = scope.getElementsByTagName(element);
+            for (i = 0; i < elements.length; i = i + 1) {
+                result.push(elements[i]);
+            }
         }
+        return result;
+    },
+    
+    selectByQuery: function (query, scope) {
+        var elements, result = [], i;
+        if (scope === undefined) {
+            elements = document.querySelectorAll(query);
+            for (i = 0; i < elements.length; i = i + 1) {
+                result.push(elements[i]);
+            }
+        } else {
+            elements = scope.querySelectorAll(query);
+            for (i = 0; i < elements.length; i = i + 1) {
+                result.push(elements[i]);
+            }
+        }
+        return result;
     },
 
     nameType: function (element) {
@@ -281,6 +309,14 @@ var j = {
                 }
             }
             return false;
+        }
+    },
+    
+    getStyle: function (element, property) {
+        if (window.getComputedStyle !== undefined) {
+            return window.getComputedStyle(element, null).getPropertyValue(property);
+        } else {
+            return element.currentStyle[property];
         }
     },
 
@@ -444,23 +480,23 @@ var j = {
     loadFont: function (fonts) {
         var styleElement = document.createElement("style");
         styleElement.setAttribute("type", "text/css");
-        if(fonts.light !== undefined) {
+        if (fonts.light !== undefined) {
             styleElement.innerHTML += "@font-face{\nfont-family: '" + fonts.name + "';\nfont-weight:300;\nsrc: url(";
-            if(fonts.light.otf !== undefined) {
+            if (fonts.light.otf !== undefined) {
                 styleElement.innerHTML += "fonts/" + fonts.light.otf + ");";
             }
             styleElement.innerHTML += "\n}\n";
         }
-        if(fonts.normal !== undefined) {
+        if (fonts.normal !== undefined) {
             styleElement.innerHTML += "@font-face{\nfont-family: '" + fonts.name + "';\nfont-weight:400;\nsrc: url(";
-            if(fonts.normal.otf !== undefined) {
+            if (fonts.normal.otf !== undefined) {
                 styleElement.innerHTML += "fonts/" + fonts.normal.otf + ");";
             }
             styleElement.innerHTML += "\n}\n";
         }
-        if(fonts.bold !== undefined) {
+        if (fonts.bold !== undefined) {
             styleElement.innerHTML += "@font-face{\nfont-family: '" + fonts.name + "';\nfont-weight:700;\nsrc: url(";
-            if(fonts.bold.otf !== undefined) {
+            if (fonts.bold.otf !== undefined) {
                 styleElement.innerHTML += "fonts/" + fonts.bold.otf + ");";
             }
             styleElement.innerHTML += "\n}\n";
@@ -468,26 +504,6 @@ var j = {
         this.selectByTag("head")[0].appendChild(styleElement);
 	},
     
-/*    <style> 
-@font-face
-{
-font-family: myFirstFont;
-src: url(sansation_light.woff);
-}
-
-@font-face
-{
-font-family: myFirstFont;
-src: url(sansation_bold.woff);
-
-}
-
-div
-{
-font-family:myFirstFont;
-}
-</style>
-	*/
 	isMobile: function () {
         var agent;
 		agent = navigator.userAgent || navigator.vendor || window.opera;
