@@ -91,8 +91,11 @@ var j = {
 		    }
 		}
 	},
-	onDomReady: function (fn) {
-        if (document.addEventListener) {
+    
+    /*onDomReady: function (fn) {
+        if (document.readyState === "complete") {
+            fn();
+        } else if (document.addEventListener) {
 			document.addEventListener('DOMContentLoaded', function () { fn(); }, false);
 		} else {
 			if (document.onreadystatechange) {
@@ -111,6 +114,21 @@ var j = {
 					}
 				};
 			}
+		}
+	},*/
+    
+	onDomReady: function (fn) {
+        function fnWrapper() {
+            if (document.readyState === "complete") {
+                fn();
+            }
+        }
+        if (document.readyState === "complete") {
+            fn();
+        } else if (document.addEventListener) {
+			document.addEventListener('DOMContentLoaded', function () { fn(); }, false);
+		} else if (document.attachEvent) {
+            document.attachEvent('onreadystatechange', fnWrapper);
 		}
 	},
     addEvent : function (html_element, event_name, event_function) {
