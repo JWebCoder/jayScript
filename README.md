@@ -3,44 +3,84 @@ jayScript
 
 A new javascript framework for those who think the right way.
 
-jayScript framework V0.5
+jayScript framework V0.6
 ------------------------
 
 jayScript is a JavaScript library that provides a list of useful functions without extendind any built-in objects.
 
 It comes from combining pieces of code that you need to write to every single project you make, such has the domReady event, the onLoad event, a sharing script to social networks, and more.
 
-Version 0.1
+Version 0.6
 -----------
 
 Features list:
 
+-   [version](<#version>)
+-   [forEach](<#forEach>)
+-   [keys](<#keys>)
+-   [isObject](<#isObject>)
 -   [loadFile](<#loadFile>)
 -   [checkIfFileLoaded](<#checkIfFileLoaded>)
 -   [onPageLoaded](<#onPageLoaded>)
 -   [onDomReady](<#onDomReady>)
+-   [addEvent](<#addEvent>)
+-   [removeEvent](<#removeEvent>)
 -   [setFullBackground](<#setFullBackground>)
 -   [select](<#select>)
 -   [selectById](<#selectById>)
 -   [selectByClass](<#selectByClass>)
 -   [selectByTag](<#selectByTag>)
+-   [selectByQuery](<#selectByQuery>)
 -   [nameType](<#nameType>)
 -   [first](<#first>)
 -   [addClass](<#addClass>)
 -   [removeClass](<#removeClass>)
 -   [hasClass](<#hasClass>)
+-   [toggleClass](<#toggleClass>)
+-   [getStyle](<#getStyle>)
 -   [createFloatingBox](<#createFloatingBox>)
 -   [showFloatingBox](<#showFloatingBox>)
 -   [getQueryParams](<#getQueryParams>)
 -   [throttle](<#throttle>)
 -   [debounce](<#debounce>)
 -   [loadGoogleFont](<#loadGoogleFont>)
+-   [loadFont](<#loadFont>)
 -   [isMobile](<#isMobile>)
 -   [get](<#get>)
 -   [strip](<#strip>)
 -   [share](<#share>)
 -   [socialShare](<#socialShare>)
    -   [setTheme](<#setTheme>)
+
+<a name="version"/> version
+-----------------------------
+
+    console.log(j.version);
+
+<a name="forEach"/> forEach
+-----------------------------
+
+    j.forEach([1,2,3], function(item) {
+        console.log(item);
+    });
+
+Or
+
+    j.forEach({item1: 1,item2: 2, item3: 3}, function(value, key) {
+        console.log(value);
+        console.log(key);
+    });
+
+<a name="keys"/> keys
+-----------------------------
+
+    j.keys({item1: 1,item2: 2, item3: 3});
+
+<a name="isObject"/> isObject
+-----------------------------
+
+    var x = {}
+    j.isObject(x);
 
 <a name="loadFile"/> loadFile
 -----------------------------
