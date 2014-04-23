@@ -3,6 +3,52 @@
 /*global j */
 'use strict';
 var j = {
+    breaker: {},
+    version: '0.6',
+    forEach: function (obj, fn, scope) {
+        var i, len, keys;
+        if (obj === null) {
+            return obj;
+        }
+        if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
+            obj.forEach(fn, scope);
+        } else if (obj.length === +obj.length) {
+            for (i = 0, len = obj.length; i < len; i += 1) {
+                if (fn.call(scope, obj[i], i, obj) === this.breaker) {
+                    return;
+                }
+            }
+        } else {
+            keys = this.keys(obj);
+            for (i = 0, len = keys.length; i < len; i += 1) {
+                if (fn.call(scope, obj[keys[i]], keys[i], obj) === this.breaker) {
+                    return;
+                }
+            }
+        }
+        return obj;
+    },
+    
+    keys: function (obj) {
+        if (!this.isObject(obj)) {
+            return [];
+        }
+        if (Object.keys) {
+            return Object.keys(obj);
+        }
+        var keys = [], key;
+        for (key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                keys.push(key);
+            }
+        }
+        return keys;
+    },
+    
+    isObject: function (obj) {
+        return obj === Object(obj);
+    },
+    
 	loadFile: function (items, fn) {
         function loadJs(fileName) {
             var script;
