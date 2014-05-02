@@ -3,14 +3,14 @@ jayScript
 
 A new javascript framework for those who think the right way.
 
-jayScript framework V0.6
+jayScript framework V0.61
 ------------------------
 
 jayScript is a JavaScript library that provides a list of useful functions without extendind any built-in objects.
 
 It comes from combining pieces of code that you need to write to every single project you make, such has the domReady event, the onLoad event, a sharing script to social networks, and more.
 
-Version 0.6
+Version 0.61
 -----------
 
 Features list:
