@@ -68,8 +68,14 @@ var j = {
             return script;
         }
 		var counter = items.length, next = 0, i = 0, fileName, fileType, script;
-        function callback() {
-            next = next + 1;
+        function Callback() {
+            if (this.readyState) {
+                if (this.readyState === "complete") {
+                    next = next + 1;
+                }
+            } else {
+                next = next + 1;
+            }
             if (counter === next) {
                 fn();
             }
@@ -87,9 +93,9 @@ var j = {
                 if (typeof script !== "undefined") {
                     if (fn) {
                         if (script.addEventListener) {
-                            script.addEventListener("load", callback, false);
+                            script.addEventListener("load", Callback, false);
                         } else if (script.readyState) {
-                            script.onreadystatechange = callback;
+                            script.onreadystatechange = Callback;
                         }
                     }
 					this.selectByTag("head")[0].appendChild(script);
