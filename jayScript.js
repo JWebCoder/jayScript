@@ -29,6 +29,43 @@ var j = {
         return obj;
     },
     
+    trim: function (string) {
+        if (string === null) {
+            return '';
+        }
+        if (String.prototype.trim) {
+            return String.prototype.trim.call(string);
+        }
+        return string.replace(/^\s+|\s+$/g, '');
+    },
+    
+    trimLeft: function (string) {
+        if (string === null) {
+            return '';
+        }
+        if (String.prototype.trimLeft) {
+            return String.prototype.trimLeft.call(string);
+        }
+        return string.replace(/^\s+/, '');
+    },
+    
+    trimRight: function (string) {
+        if (string === null) {
+            return '';
+        }
+        if (String.prototype.trimLeft) {
+            return String.prototype.trimRight.call(string);
+        }
+        return string.replace(/\s+$/, '');
+    },
+    
+    stringContains: function (string, content) {
+        if (String.prototype.contains) {
+            string.contains(content);
+        }
+        return string.indexOf(content) !== -1;
+    },
+    
     keys: function (obj) {
         if (!this.isObject(obj)) {
             return [];
@@ -110,7 +147,7 @@ var j = {
 			elems = this.selectByTag('script');
 			for (i = 0; i < elems.length; i = i + 1) {
                 if (elems[i].getAttribute("src") !== null) {
-                    if ((elems[i].getAttribute("src")).indexOf(fileName) > -1) {
+                    if (this.stringContains(elems[i].getAttribute("src"), fileName)) {
                         return false;
                     }
                 }
@@ -118,7 +155,7 @@ var j = {
 		} else if (fileType === "css") {
             elems = this.selectByTag('link');
 			for (i = 0; i < elems.length; i = i + 1) {
-				if ((elems[i].getAttribute("href")).indexOf(fileName) > -1) {
+				if (this.stringContains(elems[i].getAttribute("href"), fileName)) {
 				    return false;
 				}
 			}
@@ -144,31 +181,6 @@ var j = {
 		}
 	},
     
-    /*onDomReady: function (fn) {
-        if (document.readyState === "complete") {
-            fn();
-        } else if (document.addEventListener) {
-			document.addEventListener('DOMContentLoaded', function () { fn(); }, false);
-		} else {
-			if (document.onreadystatechange) {
-				var curronready = document.onreadystatechange,
-				    newonready = function () {
-				        curronready();
-				        if (document.readyState === "complete") {
-                            fn();
-                        }
-                    };
-				document.onreadystatechange = newonready;
-			} else {
-				document.onreadystatechange = function () {
-					if (document.readyState === "complete") {
-						fn();
-					}
-				};
-			}
-		}
-	},*/
-    
     onDomReady: function (fn) {
         function fnWrapper() {
             if (document.readyState === "complete") {
@@ -183,6 +195,7 @@ var j = {
             document.attachEvent('onreadystatechange', fnWrapper);
 		}
 	},
+    
     addEvent : function (html_element, event_name, event_function) {
         if (html_element.addEventListener) {
             html_element.addEventListener(event_name, event_function, false);
@@ -254,7 +267,7 @@ var j = {
         } else {
             elements = j.selectByTag('*', scope);
             for (i = 0; i < elements.length; i = i + 1) {
-                if ((' ' + elements[i].className + ' ').indexOf(' ' + element + ' ') > -1) {
+                if (this.stringContains(elements[i].className, element)) {
                     result.push(elements[i]);
                 }
             }
