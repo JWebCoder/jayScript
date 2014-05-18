@@ -4,7 +4,7 @@
 'use strict';
 var j = {
     breaker: {},
-    version: '0.7',
+    version: '0.71',
     forEach: function (obj, fn, scope) {
         var i, len, keys;
         if (obj === null) {
@@ -107,7 +107,7 @@ var j = {
 		var counter = items.length, next = 0, i = 0, fileName, fileType, script;
         function Callback() {
             if (this.readyState) {
-                if (this.readyState === "complete") {
+                if ((this.readyState === "complete") || (this.readyState === "loaded")) {
                     next = next + 1;
                 }
             } else {

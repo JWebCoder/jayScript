@@ -10,7 +10,7 @@ jayScript is a JavaScript library that provides a list of useful functions witho
 
 It comes from combining pieces of code that you need to write to every single project you make, such has the domReady event, the onLoad event, a sharing script to social networks, and more.
 
-Version 0.7
+Version 0.71
 -----------
 
 Features list:
