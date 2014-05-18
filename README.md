@@ -3,7 +3,7 @@ jayScript
 
 A new javascript framework for those who think the right way.
 
-jayScript framework V0.7
+jayScript framework V0.71
 ------------------------
 
 jayScript is a JavaScript library that provides a list of useful functions without extendind any built-in objects.
