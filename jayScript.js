@@ -408,10 +408,16 @@ var j = {
     },
     
     toggleClass: function (className, element) {
-        if (this.hasClass(className, element)) {
-            this.removeClass(className, element);
+        if(element.length > 1) {
+            this.forEach(element, function(entry){
+                this.addClass(className, entry);
+            }, this);
         } else {
-            this.addClass(className, element);
+            if (this.hasClass(className, element)) {
+                this.removeClass(className, element);
+            } else {
+                this.addClass(className, element);
+            }
         }
     },
     
