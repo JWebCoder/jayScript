@@ -138,7 +138,9 @@ var j = {
 					this.selectByTag("head")[0].appendChild(script);
                     
 				}
-			}
+			} else {
+                next += 1;
+            }
 		}
 	},
     checkIfFileLoaded: function (fileName, fileType) {
@@ -326,8 +328,8 @@ var j = {
     
     addClass: function (className, element) {
         var i, elemI;
-        if(element.length > 1) {
-            this.forEach(element, function(entry){
+        if (element.length > 1) {
+            this.forEach(element, function (entry) {
                 this.addClass(className, entry);
             }, this);
         } else {
@@ -360,8 +362,8 @@ var j = {
     
     removeClass: function (className, element) {
         var i, elemI;
-        if(element.length > 1) {
-            this.forEach(element, function(entry){
+        if (element.length > 1) {
+            this.forEach(element, function (entry) {
                 this.addClass(className, entry);
             }, this);
         } else {
@@ -408,8 +410,8 @@ var j = {
     },
     
     toggleClass: function (className, element) {
-        if(element.length > 1) {
-            this.forEach(element, function(entry){
+        if (element.length > 1) {
+            this.forEach(element, function (entry) {
                 this.addClass(className, entry);
             }, this);
         } else {
