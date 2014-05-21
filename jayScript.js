@@ -398,6 +398,7 @@ var j = {
     },
     
     toggleClass: function (className, element) {
+        var elemI;
         if (Object.prototype.toString.call(element) === '[object Array]') {
             for (elemI = 0; elemI < element.length; elemI = elemI + 1) {
                 this.toggleClass(className, element[elemI]);
