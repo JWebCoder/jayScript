@@ -4,7 +4,7 @@
 'use strict';
 var j = {
     breaker: {},
-    version: '0.71',
+    version: '0.8',
     forEach: function (obj, fn, scope) {
         var i, len, keys;
         if (obj === null) {
