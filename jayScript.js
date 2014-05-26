@@ -198,7 +198,7 @@ var j = {
 		}
 	},
     
-    addEvent : function (html_element, event_name, event_function) {
+    addEvent: function (html_element, event_name, event_function) {
         if (html_element.addEventListener) {
             html_element.addEventListener(event_name, event_function, false);
         } else if (html_element.attachEvent) {
@@ -208,7 +208,7 @@ var j = {
         }
     },
     
-    removeEvent : function (html_element, event_name, event_function) {
+    removeEvent: function (html_element, event_name, event_function) {
         if (html_element.removeEventListener) {
             html_element.removeEventListener(event_name, event_function, false);
         } else if (html_element.detachEvent) {
@@ -218,7 +218,19 @@ var j = {
         }
     },
     
-    setFullBackground : function (link, target) {
+    triggerEvent: function (element, event_name) {
+        var event;
+        if (document.createEvent) {
+            event = document.createEvent("Event");
+            event.initEvent(event_name, true, false);
+            element.dispatchEvent(event);
+        } else if (document.createEventObject) {
+            event = document.createEventObject();
+            element.fireEvent("on" + event_name, event);
+        }
+    },
+    
+    setFullBackground: function (link, target) {
         var element;
         target = typeof target !== 'undefined' ? target : "html";
         if (this.nameType(target) === 0) {
@@ -420,7 +432,7 @@ var j = {
         }
     },
 
-    createFloatingBox : function (element) {
+    createFloatingBox: function (element) {
         var stopMove = false,
             topBar = document.createElement("div"),
             self = this,
