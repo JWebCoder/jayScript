@@ -4,7 +4,7 @@
 'use strict';
 var j = {
     breaker: {},
-    version: '0.8',
+    version: '0.9',
     forEach: function (obj, fn, scope) {
         var i, len, keys;
         if (obj === null) {
@@ -319,6 +319,30 @@ var j = {
             }
         }
         return result;
+    },
+    
+    selectParentById: function (id, element) {
+        if(element.parentNode.getAttribute('id') === id) {
+            return element.parentNode;
+        } else {
+            return this.selectParentById(id, element.parentNode);
+        }
+    },
+    
+    selectParentByClass: function (className, element) {
+        if(this.hasClass(className, element.parentNode)) {
+            return element.parentNode;
+        } else {
+            return this.selectParentByClass(className, element.parentNode);
+        }
+    },
+    
+    selectParentByTag: function (tag, element) {
+        if(element.parentNode.tagName === tag.toUpperCase) {
+            return element.parentNode;
+        } else {
+            return this.selectParentByTag(tag, element.parentNode);
+        }
     },
 
     nameType: function (element) {
