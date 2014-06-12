@@ -1,4 +1,4 @@
-jayScript [![Gitter chat](https://badges.gitter.im/JWebCoder/jayScript.png)](https://gitter.im/JWebCoder/jayScript) ![dependencies](http://img.shields.io/gemnasium/mathiasbynens/he.svg?style=flat)
+jayScript [![Gitter chat](http://img.shields.io/badge/gitter-jwebcoder/jayscript-brightgreen.svg?style=flat)](https://gitter.im/JWebCoder/jayScript) ![dependencies](http://img.shields.io/gemnasium/mathiasbynens/he.svg?style=flat)
 =========
 
 
