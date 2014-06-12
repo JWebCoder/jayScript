@@ -1,5 +1,6 @@
-jayScript
+jayScript [![Gitter chat](https://badges.gitter.im/JWebCoder/jayScript.png)](https://gitter.im/JWebCoder/jayScript) ![dependencies](http://img.shields.io/gemnasium/mathiasbynens/he.svg)
 =========
+
 
 A new javascript framework for those who think the right way.
 
