@@ -470,22 +470,22 @@ var j = {
 				topBar.parentNode.style.left = e.clientX - topBar.left + "px";
 			}
         }
-        function mouseUp(e) {
+        function mouseUp() {
 			window.removeEventListener('mousemove', moveBox, false);
 			stopMove = false;
 		}
 		
-		function mouseDown(e) {
+		function mouseDown() {
 			topBar.top = e.clientY - parseInt(topBar.parentNode.style.top, 10);
             topBar.left = e.clientX - parseInt(topBar.parentNode.style.left, 10);
             window.addEventListener("mousemove", moveBox, false);
 		}
 		
-		function mouseDownClose(e) {
+		function mouseDownClose() {
             stopMove = true;
 		}
 		
-		function moveUp(e) {
+		function moveUp() {
             var zIndex;
 			self.selectByClass("floatingBoxBar").forEach(function (entry) {
 				zIndex = entry.parentNode.style.zIndex;
@@ -732,8 +732,6 @@ var j = {
             }
         },
         setTheme: function (targetElements, path, theme, invertTheme) {
-            var curronready,
-                newonready;
             function imagesManager() {
                 var elems = j.selectByTag('a'), i, images;
                 function MouseOverNoTheme() {
