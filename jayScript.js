@@ -322,7 +322,7 @@ var j = {
     },
     
     selectParentById: function (id, element) {
-        if(element.parentNode.getAttribute('id') === id) {
+        if (element.parentNode.getAttribute('id') === id) {
             return element.parentNode;
         } else {
             return this.selectParentById(id, element.parentNode);
@@ -330,7 +330,7 @@ var j = {
     },
     
     selectParentByClass: function (className, element) {
-        if(this.hasClass(className, element.parentNode)) {
+        if (this.hasClass(className, element.parentNode)) {
             return element.parentNode;
         } else {
             return this.selectParentByClass(className, element.parentNode);
@@ -338,7 +338,7 @@ var j = {
     },
     
     selectParentByTag: function (tag, element) {
-        if(element.parentNode.tagName === tag.toUpperCase) {
+        if (element.parentNode.tagName === tag.toUpperCase) {
             return element.parentNode;
         } else {
             return this.selectParentByTag(tag, element.parentNode);
@@ -475,8 +475,8 @@ var j = {
 			stopMove = false;
 		}
 		
-		function mouseDown() {
-			topBar.top = e.clientY - parseInt(topBar.parentNode.style.top, 10);
+		function mouseDown(e) {
+            topBar.top = e.clientY - parseInt(topBar.parentNode.style.top, 10);
             topBar.left = e.clientX - parseInt(topBar.parentNode.style.left, 10);
             window.addEventListener("mousemove", moveBox, false);
 		}
