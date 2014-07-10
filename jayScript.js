@@ -4,7 +4,10 @@
 'use strict';
 var j = {
     breaker: {},
-    version: '0.9',
+    version: '0.95',
+    me: function () {
+        console.log("   _             _____           _       _   \n  (_)           /  ___|         (_)     | |  \n   _  __ _ _   _\\ `--.  ___ _ __ _ _ __ | |_ \n  | |/ _` | | | |`--. \\/ __| '__| | '_ \\| __|\n  | | (_| | |_| /\\__/ / (__| |  | | |_) | |_ \n  | |\\__,_|\\__, \\____/ \\___|_|  |_| .__/ \\__|\n _/ |       __/ |                 | |        \n|__/       |___/                  |_|        \n");
+    },
     forEach: function (obj, fn, scope) {
         var i, len, keys;
         if (obj === null) {
@@ -338,7 +341,7 @@ var j = {
     },
     
     selectParentByTag: function (tag, element) {
-        if (element.parentNode.tagName === tag.toUpperCase) {
+        if (element.parentNode.tagName === tag.toUpperCase()) {
             return element.parentNode;
         } else {
             return this.selectParentByTag(tag, element.parentNode);
@@ -463,22 +466,59 @@ var j = {
             leftTopBar,
             rightTopBar,
             text,
-            clearTopBar;
+            clearTopBar,
+            resize,
+            docFragment = document.createDocumentFragment();
         function moveBox(e) {
             if (!stopMove) {
-				topBar.parentNode.style.top = e.clientY - topBar.top + "px";
-				topBar.parentNode.style.left = e.clientX - topBar.left + "px";
+                if ((e.clientY - topBar.top) <= 0) {
+                    topBar.parentNode.style.top = 0;
+                } else if ((e.clientY - topBar.top) + parseInt(self.getStyle(topBar.parentNode, "height"), 10) < window.innerHeight) {
+				    topBar.parentNode.style.top = e.clientY - topBar.top + "px";
+                } else {
+                    topBar.parentNode.style.top = window.innerHeight - parseInt(self.getStyle(topBar.parentNode, "height"), 10) + "px";
+                }
+                if ((e.clientX - topBar.left) <= 0) {
+                    topBar.parentNode.style.left = 0;
+                } else if ((e.clientX - topBar.left) + parseInt(self.getStyle(topBar.parentNode, "width"), 10) < window.innerWidth) {
+				    topBar.parentNode.style.left = e.clientX - topBar.left + "px";
+                } else {
+                    topBar.parentNode.style.left = window.innerWidth - parseInt(self.getStyle(topBar.parentNode, "width"), 10) + "px";
+                }
+				
 			}
         }
+        
+        function resizeBox(e) {
+            if (e.clientX <= window.innerWidth) {
+                topBar.parentNode.style.width = e.clientX - topBar.left + 5 + "px";
+            } else {
+                topBar.parentNode.style.width = window.innerWidth - topBar.left + "px";
+            }
+                
+            if (e.clientY <= window.innerHeight) {
+                topBar.parentNode.style.height = e.clientY - topBar.top + 5 + "px";
+            } else {
+                topBar.parentNode.style.height = window.innerHeight - topBar.top + "px";
+            }
+        }
+        
         function mouseUp() {
 			window.removeEventListener('mousemove', moveBox, false);
+            window.removeEventListener('mousemove', resizeBox, false);
 			stopMove = false;
 		}
 		
 		function mouseDown(e) {
-            topBar.top = e.clientY - parseInt(topBar.parentNode.style.top, 10);
-            topBar.left = e.clientX - parseInt(topBar.parentNode.style.left, 10);
+            topBar.top = e.clientY - parseInt(self.getStyle(topBar.parentNode, "top"), 10);
+            topBar.left = e.clientX - parseInt(self.getStyle(topBar.parentNode, "left"), 10);
             window.addEventListener("mousemove", moveBox, false);
+		}
+        
+        function mouseDownResize(e) {
+            topBar.top = parseInt(self.getStyle(topBar.parentNode, "top"), 10);
+            topBar.left = parseInt(self.getStyle(topBar.parentNode, "left"), 10);
+            window.addEventListener("mousemove", resizeBox, false);
 		}
 		
 		function mouseDownClose() {
@@ -497,15 +537,9 @@ var j = {
 			element.style.zIndex = 100;
 		}
 		
-		element = this.select(element);
-        this.first(element);
         this.addClass("floatingBoxBar", topBar);
-        topBar.addEventListener("mousedown", mouseDown, false);
-        window.addEventListener('mouseup', mouseUp, false);
-		leftTopBar = document.createElement("div");
-		leftTopBar.style.float = "left";
-		text = document.createTextNode("Bar");
-		leftTopBar.appendChild(text);
+        this.addEvent(topBar, "mousedown", mouseDown);
+        this.addEvent(window, 'mouseup', mouseUp);
 		
 		rightTopBar = document.createElement("div");
 		rightTopBar.style.float = "right";
@@ -520,13 +554,27 @@ var j = {
 		clearTopBar = document.createElement("div");
 		clearTopBar.style.clear = "both";
 		
-		topBar.appendChild(leftTopBar);
+        if (element.getAttribute("data-windowTitle") !== null) {
+            leftTopBar = document.createElement("div");
+            leftTopBar.style.float = "left";
+            text = document.createTextNode(element.getAttribute("data-windowTitle"));
+            leftTopBar.appendChild(text);
+            topBar.appendChild(leftTopBar);
+        }
+		
 		topBar.appendChild(rightTopBar);
 		topBar.appendChild(clearTopBar);
 		
-		element.insertBefore(topBar, element.firstChild);
-		element.addEventListener("mousedown", moveUp, false);
+        resize = document.createElement("div");
+        j.addClass("resize", resize);
+        
+        docFragment.appendChild(topBar);
+        docFragment.appendChild(resize);
+		element.insertBefore(docFragment, element.firstChild);
+        element.addEventListener("mousedown", moveUp, false);
 		
+        j.addEvent(resize, "mousedown", mouseDownResize);
+        
 		return element;
     },
 	
@@ -539,7 +587,6 @@ var j = {
 			}
 			entry.parentNode.style.zIndex = zIndex - 1;
 		});
-		element = this.first(this.select(element));
         element.style.display = "block";
 		element.style.zIndex = 100;
 	},
