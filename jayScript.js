@@ -4,7 +4,7 @@
 'use strict';
 var j = {
     breaker: {},
-    version: '0.95',
+    version: '0.96',
     me: function () {
         console.log("   _             _____           _       _   \n  (_)           /  ___|         (_)     | |  \n   _  __ _ _   _\\ `--.  ___ _ __ _ _ __ | |_ \n  | |/ _` | | | |`--. \\/ __| '__| | '_ \\| __|\n  | | (_| | |_| /\\__/ / (__| |  | | |_) | |_ \n  | |\\__,_|\\__, \\____/ \\___|_|  |_| .__/ \\__|\n _/ |       __/ |                 | |        \n|__/       |___/                  |_|        \n");
     },
@@ -459,7 +459,7 @@ var j = {
         }
     },
 
-    createFloatingBox: function (element) {
+    createFloatingBox: function (element, box) {
         var stopMove = false,
             topBar = document.createElement("div"),
             self = this,
@@ -468,38 +468,50 @@ var j = {
             text,
             clearTopBar,
             resize,
+            maxHeight,
+            maxWidth,
             docFragment = document.createDocumentFragment();
+            if (typeof box !== "undefined") {
+                
+                maxHeight = parseInt(j.getStyle(box, "height"), 10);
+                maxWidth = parseInt(j.getStyle(box, "width"), 10);
+                
+            } else {
+                maxHeight = window.innerHeight;
+                maxWidth = window.innerWidth;
+            }
+        
         function moveBox(e) {
             if (!stopMove) {
                 if ((e.clientY - topBar.top) <= 0) {
                     topBar.parentNode.style.top = 0;
-                } else if ((e.clientY - topBar.top) + parseInt(self.getStyle(topBar.parentNode, "height"), 10) < window.innerHeight) {
+                } else if ((e.clientY - topBar.top) + parseInt(self.getStyle(topBar.parentNode, "height"), 10) < maxHeight) {
 				    topBar.parentNode.style.top = e.clientY - topBar.top + "px";
                 } else {
-                    topBar.parentNode.style.top = window.innerHeight - parseInt(self.getStyle(topBar.parentNode, "height"), 10) + "px";
+                    topBar.parentNode.style.top = maxHeight - parseInt(self.getStyle(topBar.parentNode, "height"), 10) + "px";
                 }
                 if ((e.clientX - topBar.left) <= 0) {
                     topBar.parentNode.style.left = 0;
-                } else if ((e.clientX - topBar.left) + parseInt(self.getStyle(topBar.parentNode, "width"), 10) < window.innerWidth) {
+                } else if ((e.clientX - topBar.left) + parseInt(self.getStyle(topBar.parentNode, "width"), 10) < maxWidth) {
 				    topBar.parentNode.style.left = e.clientX - topBar.left + "px";
                 } else {
-                    topBar.parentNode.style.left = window.innerWidth - parseInt(self.getStyle(topBar.parentNode, "width"), 10) + "px";
+                    topBar.parentNode.style.left = maxWidth - parseInt(self.getStyle(topBar.parentNode, "width"), 10) + "px";
                 }
 				
 			}
         }
         
         function resizeBox(e) {
-            if (e.clientX <= window.innerWidth) {
+            if (e.clientX <= maxWidth) {
                 topBar.parentNode.style.width = e.clientX - topBar.left + 5 + "px";
             } else {
-                topBar.parentNode.style.width = window.innerWidth - topBar.left + "px";
+                topBar.parentNode.style.width = maxWidth - topBar.left + "px";
             }
                 
-            if (e.clientY <= window.innerHeight) {
+            if (e.clientY <= maxHeight) {
                 topBar.parentNode.style.height = e.clientY - topBar.top + 5 + "px";
             } else {
-                topBar.parentNode.style.height = window.innerHeight - topBar.top + "px";
+                topBar.parentNode.style.height = maxHeight - topBar.top + "px";
             }
         }
         
@@ -515,7 +527,7 @@ var j = {
             window.addEventListener("mousemove", moveBox, false);
 		}
         
-        function mouseDownResize(e) {
+        function mouseDownResize() {
             topBar.top = parseInt(self.getStyle(topBar.parentNode, "top"), 10);
             topBar.left = parseInt(self.getStyle(topBar.parentNode, "left"), 10);
             window.addEventListener("mousemove", resizeBox, false);
