@@ -325,26 +325,38 @@ var j = {
     },
     
     selectParentById: function (id, element) {
-        if (element.parentNode.getAttribute('id') === id) {
-            return element.parentNode;
+        if (element.parentNode !== document) {
+            if (element.parentNode.getAttribute('id') === id) {
+                return element.parentNode;
+            } else {
+                return this.selectParentById(id, element.parentNode);
+            }
         } else {
-            return this.selectParentById(id, element.parentNode);
+            return "";
         }
     },
     
     selectParentByClass: function (className, element) {
-        if (this.hasClass(className, element.parentNode)) {
-            return element.parentNode;
+        if (element.parentNode !== document) {
+            if (this.hasClass(className, element.parentNode)) {
+                return element.parentNode;
+            } else {
+                return this.selectParentByClass(className, element.parentNode);
+            }
         } else {
-            return this.selectParentByClass(className, element.parentNode);
+            return "";
         }
     },
     
     selectParentByTag: function (tag, element) {
-        if (element.parentNode.tagName === tag.toUpperCase()) {
-            return element.parentNode;
+        if (element.parentNode !== document) {
+            if (element.parentNode.tagName === tag.toUpperCase()) {
+                return element.parentNode;
+            } else {
+                return this.selectParentByTag(tag, element.parentNode);
+            }
         } else {
-            return this.selectParentByTag(tag, element.parentNode);
+            return "";
         }
     },
 
