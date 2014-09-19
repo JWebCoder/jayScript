@@ -4,14 +4,14 @@ jayScript [![Gitter chat](http://img.shields.io/badge/gitter-jwebcoder/jayscript
 
 A new javascript framework for those who think the right way.
 
-[jayScript framework V0.96](http://jayscript.servehttp.com)
+[jayScript framework V0.97](http://jayscript.servehttp.com)
 ------------------------
 
 jayScript is a JavaScript library that provides a list of useful functions without extendind any built-in objects.
 
 It comes from combining pieces of code that you need to write to every single project you make, such has the domReady event, the onLoad event, a sharing script to social networks, and more.
 
-Version 0.96
+Version 0.97
 -----------
 
 Features list:
@@ -52,10 +52,11 @@ Features list:
 -   [loadFont](<#loadFont>)
 -   [isMobile](<#isMobile>)
 -   [get](<#get>)
+-   [post](<#post>)
 -   [strip](<#strip>)
 -   [share](<#share>)
 -   [socialShare](<#socialShare>)
-   -   [setTheme](<#setTheme>)
+-   [setTheme](<#setTheme>)
 
 For more information check out the website:
 ### [jayScript](http://jayscript.servehttp.com)

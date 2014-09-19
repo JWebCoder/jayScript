@@ -4,7 +4,7 @@
 'use strict';
 var j = {
     breaker: {},
-    version: '0.96',
+    version: '0.97',
     me: function () {
         console.log("   _             _____           _       _   \n  (_)           /  ___|         (_)     | |  \n   _  __ _ _   _\\ `--.  ___ _ __ _ _ __ | |_ \n  | |/ _` | | | |`--. \\/ __| '__| | '_ \\| __|\n  | | (_| | |_| /\\__/ / (__| |  | | |_) | |_ \n  | |\\__,_|\\__, \\____/ \\___|_|  |_| .__/ \\__|\n _/ |       __/ |                 | |        \n|__/       |___/                  |_|        \n");
     },
@@ -483,15 +483,15 @@ var j = {
             maxHeight,
             maxWidth,
             docFragment = document.createDocumentFragment();
-            if (typeof box !== "undefined") {
+        if (typeof box !== "undefined") {
                 
-                maxHeight = parseInt(j.getStyle(box, "height"), 10);
-                maxWidth = parseInt(j.getStyle(box, "width"), 10);
-                
-            } else {
-                maxHeight = window.innerHeight;
-                maxWidth = window.innerWidth;
-            }
+            maxHeight = parseInt(j.getStyle(box, "height"), 10);
+            maxWidth = parseInt(j.getStyle(box, "width"), 10);
+
+        } else {
+            maxHeight = window.innerHeight;
+            maxWidth = window.innerWidth;
+        }
         
         function moveBox(e) {
             if (!stopMove) {
@@ -721,9 +721,36 @@ var j = {
 		}
 	},
 
-    get: function (target, callback) {
+    get: function (target, callback, options) {
         var xmlhttp;
 		xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", target, true);
+        if (options) {
+            if (options.contentType) {
+                xmlhttp.setRequestHeader("Content-Type", options.contentType);
+            }
+        }
+		if (callback) {
+			xmlhttp.onreadystatechange = function () {
+				if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+					callback(xmlhttp);
+				}
+			};
+		}
+		xmlhttp.send();
+	},
+    
+    
+    post: function (target, callback, options) {
+        var xmlhttp;
+		xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("POST", target, true);
+        if (options) {
+            if (options.contentType) {
+                xmlhttp.setRequestHeader("Content-Type", options.contentType);
+            }
+        }
+        
 		if (callback) {
 			xmlhttp.onreadystatechange = function () {
 				if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
@@ -732,8 +759,14 @@ var j = {
 			};
 		}
 		
-		xmlhttp.open("GET", target, true);
-		xmlhttp.send();
+        if (options) {
+            if (options.data) {
+                xmlhttp.send(options.data);
+                return;
+            }
+        }
+        xmlhttp.send();
+		
 	},
     
     strip: function (html) {
