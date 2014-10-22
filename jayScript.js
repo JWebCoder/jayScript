@@ -464,10 +464,19 @@ var j = {
     },
     
     getStyle: function (element, property) {
+        var result;
         if (window.getComputedStyle !== undefined) {
             return window.getComputedStyle(element, null).getPropertyValue(property);
         } else {
-            return element.currentStyle[property];
+            result = element.currentStyle[property];
+            if (result === "auto") {
+                if(property === "width") {
+                    result =element.offsetWidth;
+                } else if (property === "height") {
+                    result = element.offsetHeight;
+                }
+            }
+            return result;
         }
     },
 
