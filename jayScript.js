@@ -466,19 +466,20 @@ var j = {
     getStyle: function (element, property) {
         var result;
         if (window.getComputedStyle !== undefined) {
-            return window.getComputedStyle(element, null).getPropertyValue(property);
+            result = window.getComputedStyle(element, null).getPropertyValue(property);
         } else {
             result = element.currentStyle[property];
-            if (result === "auto") {
-                if(property === "width") {
-                    result =element.offsetWidth;
-                } else if (property === "height") {
-                    result = element.offsetHeight;
-                }
-            }
-            return result;
         }
+        if (result === "auto") {
+            if(property === "width") {
+                result =element.offsetWidth;
+            } else if (property === "height") {
+                result = element.offsetHeight;
+            }
+        }
+        return result;
     },
+
 
     createFloatingBox: function (element, box) {
         var stopMove = false,
