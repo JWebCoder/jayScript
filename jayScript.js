@@ -3,17 +3,19 @@
 /*global j */
 'use strict';
 var j = {
-    breaker: {},
-    version: '0.97',
+    breaker: null,
+    version: '1',
+    StringProto: String.prototype,
+    ObjectProto: Object.prototype,
     me: function () {
-        console.log("   _             _____           _       _   \n  (_)           /  ___|         (_)     | |  \n   _  __ _ _   _\\ `--.  ___ _ __ _ _ __ | |_ \n  | |/ _` | | | |`--. \\/ __| '__| | '_ \\| __|\n  | | (_| | |_| /\\__/ / (__| |  | | |_) | |_ \n  | |\\__,_|\\__, \\____/ \\___|_|  |_| .__/ \\__|\n _/ |       __/ |                 | |        \n|__/       |___/                  |_|        \n");
+        console.log("  _             _____           _       _   \n  (_)           /  ___|         (_)     | |  \n   _  __ _ _   _\\ `--.  ___ _ __ _ _ __ | |_ \n  | |/ _` | | | |`--. \\/ __| '__| | '_ \\| __|\n  | | (_| | |_| /\\__/ / (__| |  | | |_) | |_ \n  | |\\__,_|\\__, \\____/ \\___|_|  |_| .__/ \\__|\n _/ |       __/ |                 | |        \n|__/       |___/                  |_|        \n");
     },
     forEach: function (obj, fn, scope) {
         var i, len, keys;
         if (obj === null) {
             return obj;
         }
-        if (Array.prototype.forEach && obj.forEach === Array.prototype.forEach) {
+        if (obj.constructor === Array) {
             obj.forEach(fn, scope);
         } else if (obj.length === +obj.length) {
             for (i = 0, len = obj.length; i < len; i += 1) {
@@ -22,7 +24,7 @@ var j = {
                 }
             }
         } else {
-            keys = this.keys(obj);
+            keys = Object.keys(obj);
             for (i = 0, len = keys.length; i < len; i += 1) {
                 if (fn.call(scope, obj[keys[i]], keys[i], obj) === this.breaker) {
                     return;
@@ -33,21 +35,15 @@ var j = {
     },
     
     trim: function (string) {
-        if (string === null) {
-            return '';
-        }
-        if (String.prototype.trim) {
-            return String.prototype.trim.call(string);
-        }
-        return string.replace(/^\s+|\s+$/g, '');
+        return this.StringProto.trim.call(string);
     },
     
     trimLeft: function (string) {
         if (string === null) {
             return '';
         }
-        if (String.prototype.trimLeft) {
-            return String.prototype.trimLeft.call(string);
+        if (this.StringProto.trimLeft) {
+            return this.StringProto.trimLeft.call(string);
         }
         return string.replace(/^\s+/, '');
     },
@@ -56,134 +52,26 @@ var j = {
         if (string === null) {
             return '';
         }
-        if (String.prototype.trimLeft) {
-            return String.prototype.trimRight.call(string);
+        if (this.StringProto.trimLeft) {
+            return this.StringProto.trimRight.call(string);
         }
         return string.replace(/\s+$/, '');
     },
     
     stringContains: function (string, content) {
-        if (String.prototype.contains) {
-            string.contains(content);
-        }
-        return string.indexOf(content) !== -1;
+        string.contains(content);
     },
     
     keys: function (obj) {
-        if (!this.isObject(obj)) {
-            return [];
-        }
-        if (Object.keys) {
-            return Object.keys(obj);
-        }
-        var keys = [], key;
-        for (key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                keys.push(key);
-            }
-        }
-        return keys;
+        return Object.keys(obj);
     },
     
     isObject: function (obj) {
         return obj === Object(obj);
     },
     
-    loadFile: function (items, fn) {
-        function loadJs(fileName) {
-            var script;
-            script = document.createElement('script');
-            script.async = true;
-            script.setAttribute("type", "text/javascript");
-            script.setAttribute("src", fileName);
-            return script;
-        }
-        function loadCss(fileName) {
-            var script;
-            script = document.createElement("link");
-            script.async = true;
-            script.setAttribute("rel", "stylesheet");
-            script.setAttribute("type", "text/css");
-            script.setAttribute("href", fileName);
-            return script;
-        }
-		var counter = items.length, next = 0, i = 0, fileName, fileType, script;
-        function Callback() {
-            if (this.readyState) {
-                if ((this.readyState === "complete") || (this.readyState === "loaded")) {
-                    next = next + 1;
-                }
-            } else {
-                next = next + 1;
-            }
-            if (counter === next) {
-                fn();
-            }
-        }
-        for (i = 0; i < items.length; i = i + 1) {
-			fileName = items[i].fileName;
-			fileType = items[i].fileType;
-			script = undefined;
-			if (this.checkIfFileLoaded(fileName, fileType)) {
-				if (fileType === "js") {
-                    script = loadJs(fileName);
-				} else if (fileType === "css") {
-					script = loadCss(fileName);
-				}
-                if (typeof script !== "undefined") {
-                    if (fn) {
-                        if (script.addEventListener) {
-                            script.addEventListener("load", Callback, false);
-                        } else if (script.readyState) {
-                            script.onreadystatechange = Callback;
-                        }
-                    }
-					this.selectByTag("head")[0].appendChild(script);
-                    
-				}
-			} else {
-                next += 1;
-            }
-		}
-	},
-    checkIfFileLoaded: function (fileName, fileType) {
-        var elems = "", i;
-		if (fileType === "js") {
-			elems = this.selectByTag('script');
-			for (i = 0; i < elems.length; i = i + 1) {
-                if (elems[i].getAttribute("src") !== null) {
-                    if (this.stringContains(elems[i].getAttribute("src"), fileName)) {
-                        return false;
-                    }
-                }
-			}
-		} else if (fileType === "css") {
-            elems = this.selectByTag('link');
-			for (i = 0; i < elems.length; i = i + 1) {
-				if (this.stringContains(elems[i].getAttribute("href"), fileName)) {
-				    return false;
-				}
-			}
-		}
-		return true;
-	},
     onPageLoaded: function (fn) {
-        if (window.addEventListener) {
-		    window.addEventListener('load', function () { fn(); }, false);
-		} else if (window.attachEvent) {
-			window.attachEvent('onload', function () { fn(); });
-		} else {
-		    if (window.onload) {
-		        var curronload = window.onload,
-                    newonload = function () {
-                        curronload();
-                        fn();
-                    };
-		        window.onload = newonload;
-		    } else {
-		        window.onload = function () { fn(); };
-		    }
-		}
+        this.addEvent(window, "load", fn);
 	},
     
     onDomReady: function (fn) {
@@ -194,132 +82,78 @@ var j = {
         }
         if (document.readyState === "complete") {
             fn();
-        } else if (document.addEventListener) {
-			document.addEventListener('DOMContentLoaded', function () { fn(); }, false);
-		} else if (document.attachEvent) {
-            document.attachEvent('onreadystatechange', fnWrapper);
-		}
+        }
+        this.addEvent(document, "DOMContentLoaded", fn);
 	},
     
     addEvent: function (html_element, event_name, event_function) {
-        if (html_element.addEventListener) {
-            html_element.addEventListener(event_name, event_function, false);
-        } else if (html_element.attachEvent) {
-            html_element.attachEvent("on" + event_name, function () {
-                event_function.call(html_element);
-            });
-        }
+        html_element.addEventListener(event_name, event_function, false);
     },
     
     removeEvent: function (html_element, event_name, event_function) {
-        if (html_element.removeEventListener) {
-            html_element.removeEventListener(event_name, event_function, false);
-        } else if (html_element.detachEvent) {
-            html_element.detachEvent("on" + event_name, function () {
-                event_function.call(html_element);
-            });
-        }
+        html_element.removeEventListener(event_name, event_function, false);
     },
     
     triggerEvent: function (element, event_name) {
         var event;
-        if (document.createEvent) {
-            event = document.createEvent("Event");
-            event.initEvent(event_name, true, false);
-            element.dispatchEvent(event);
-        } else if (document.createEventObject) {
-            event = document.createEventObject();
-            element.fireEvent("on" + event_name, event);
-        }
-    },
-    
-    setFullBackground: function (link, target) {
-        var element;
-        target = typeof target !== 'undefined' ? target : "html";
-        if (this.nameType(target) === 0) {
-            element = this.selectById(target.substring(1));
-        } else if (this.nameType(target) === 1) {
-            element = this.selectByClass(target.substring(1))[0];
-        } else if (this.nameType(target) === 2) {
-            element = this.selectByTag(target)[0];
-        }
-        element.style.background = "url('" + link + "') no-repeat center center fixed";
-        element.style.webkitBackgroundSize = "cover";
-        element.style.MozBackgroundSize = "cover";
-        element.style.OBackgroundSize = "cover";
-        element.style.backgroundSize = "cover";
+        event = document.createEvent("Event");
+        event.initEvent(event_name, true, false);
+        element.dispatchEvent(event);
     },
 
     select: function (element, scope) {
-        if (this.nameType(element) === 0) {
-            element = this.selectById(element.substring(1), scope);
-        } else if (this.nameType(element) === 1) {
-            element = this.selectByClass(element.substring(1), scope);
-        } else if (this.nameType(element) === 2) {
-            element = this.selectByTag(element, scope);
-        }
-        return element;
+        return this.selectByQuery(element, scope);
     },
 
     selectById: function (element, scope) {
-        if (scope === undefined) {
-            return document.getElementById(element);
-        } else {
-            return scope.getElementById(element);
-        }
-    },
-
-    selectByClass: function (element, scope) {
+        
         if (scope === undefined) {
             scope = document;
         }
+        
+        return scope.getElementById(element);
+    },
+
+    selectByClass: function (element, scope) {
+        
         var result = [], elements, i, nodeList;
-        if (scope.getElementsByClassName) {
-            nodeList = scope.getElementsByClassName(element);
-            nodeList = [].slice.call(nodeList);
-            for (i = 0; i < nodeList.length; i = i + 1) {
-                result.push(nodeList[i]);
-            }
-            return result;
-        } else {
-            elements = j.selectByTag('*', scope);
-            for (i = 0; i < elements.length; i = i + 1) {
-                if (this.stringContains(elements[i].className, element)) {
-                    result.push(elements[i]);
-                }
-            }
-            return result;
+        
+        if (scope === undefined) {
+            scope = document;
         }
+        
+        nodeList = scope.getElementsByClassName(element);
+        nodeList = [].slice.call(nodeList);
+        for (i = 0; i < nodeList.length; i = i + 1) {
+            result.push(nodeList[i]);
+        }
+        return result;
     },
 
     selectByTag: function (element, scope) {
         var elements, result = [], i;
+        
         if (scope === undefined) {
-            elements = document.getElementsByTagName(element);
-            for (i = 0; i < elements.length; i = i + 1) {
-                result.push(elements[i]);
-            }
-        } else {
-            elements = scope.getElementsByTagName(element);
-            for (i = 0; i < elements.length; i = i + 1) {
-                result.push(elements[i]);
-            }
+            scope = document;
+        }
+        
+        elements = scope.getElementsByTagName(element);
+        for (i = 0; i < elements.length; i = i + 1) {
+            result.push(elements[i]);
         }
         return result;
     },
     
     selectByQuery: function (query, scope) {
         var elements, result = [], i;
+        
         if (scope === undefined) {
-            elements = document.querySelectorAll(query);
-            for (i = 0; i < elements.length; i = i + 1) {
-                result.push(elements[i]);
-            }
-        } else {
-            elements = scope.querySelectorAll(query);
-            for (i = 0; i < elements.length; i = i + 1) {
-                result.push(elements[i]);
-            }
+            scope = document;
+        }
+        
+        elements = scope.querySelectorAll(query);
+        for (i = 0; i < elements.length; i = i + 1) {
+            result.push(elements[i]);
         }
         return result;
     },
@@ -359,16 +193,6 @@ var j = {
             return "";
         }
     },
-
-    nameType: function (element) {
-        if (element.charAt(0) === '#') {
-            return 0;
-        } else if (element.charAt(0) === '.') {
-            return 1;
-        } else {
-            return 2;
-        }
-    },
 	
     first: function (element) {
         if (element.length >= 1) {
@@ -379,27 +203,14 @@ var j = {
     
     addClass: function (className, element) {
         var i, elemI;
-        if (Object.prototype.toString.call(element) === '[object Array]') {
+        if (this.ObjectProto.toString.call(element) === '[object Array]') {
             for (elemI = 0; elemI < element.length; elemI = elemI + 1) {
                 this.addClass(className, element[elemI]);
             }
         } else {
             className = className.split(" ");
-            if (element.classList) {
-                for (i = 0; i < className.length; i = i + 1) {
-                    element.classList.add(className[i]);
-                }
-            } else {
-                for (i = 0; i < className.length; i = i + 1) {
-                    if (this.hasClass(className[i], element)) {
-                        this.removeClass(className[i], element);
-                    }
-                    if (element.className.length === 0) {
-                        element.className = className[i];
-                    } else {
-                        element.className = element.className + " " + className[i];
-                    }
-                }
+            for (i = 0; i < className.length; i = i + 1) {
+                element.classList.add(className[i]);
             }
         }
         return element;
@@ -407,50 +218,26 @@ var j = {
     
     removeClass: function (className, element) {
         var i, elemI;
-        if (Object.prototype.toString.call(element) === '[object Array]') {
+        if (this.ObjectProto.toString.call(element) === '[object Array]') {
             for (elemI = 0; elemI < element.length; elemI = elemI + 1) {
                 this.removeClass(className, element[elemI]);
             }
         } else {
             className = className.split(" ");
-            if (element.classList) {
-                for (i = 0; i < className.length; i = i + 1) {
-                    element.classList.remove(className[i]);
-                }
-            } else {
-                for (i = 0; i < className.length; i = i + 1) {
-                    element.className = element.className.replace(" " + className[i], "");
-                    element.className = element.className.replace(className[i], "");
-                    if (element.className[0] === " ") {
-                        element.className = element.className.substring(1);
-                    }
-                }
+            for (i = 0; i < className.length; i = i + 1) {
+                element.classList.remove(className[i]);
             }
         }
         return element;
     },
     
     hasClass: function (className, element) {
-        var classList,
-            i,
-            len;
-        if (element.classList) {
-            return element.classList.contains(className);
-        } else {
-            classList = element.className.split(" ");
-            len = classList.length;
-            for (i = 0; i < len; i = i + 1) {
-                if (className === classList[i]) {
-                    return true;
-                }
-            }
-            return false;
-        }
+        return element.classList.contains(className);
     },
     
     toggleClass: function (className, element) {
         var elemI;
-        if (Object.prototype.toString.call(element) === '[object Array]') {
+        if (this.ObjectProto.toString.call(element) === '[object Array]') {
             for (elemI = 0; elemI < element.length; elemI = elemI + 1) {
                 this.toggleClass(className, element[elemI]);
             }
@@ -465,165 +252,16 @@ var j = {
     
     getStyle: function (element, property) {
         var result;
-        if (window.getComputedStyle !== undefined) {
-            result = window.getComputedStyle(element, null).getPropertyValue(property);
-        } else {
-            result = element.currentStyle[property];
-        }
+        result = window.getComputedStyle(element, null).getPropertyValue(property);
         if (result === "auto") {
-            if(property === "width") {
-                result =element.offsetWidth;
+            if (property === "width") {
+                result = element.offsetWidth;
             } else if (property === "height") {
                 result = element.offsetHeight;
             }
         }
         return result;
     },
-
-
-    createFloatingBox: function (element, box) {
-        var stopMove = false,
-            topBar = document.createElement("div"),
-            self = this,
-            leftTopBar,
-            rightTopBar,
-            text,
-            clearTopBar,
-            resize,
-            maxHeight,
-            maxWidth,
-            docFragment = document.createDocumentFragment();
-        if (typeof box !== "undefined") {
-                
-            maxHeight = parseInt(j.getStyle(box, "height"), 10);
-            maxWidth = parseInt(j.getStyle(box, "width"), 10);
-
-        } else {
-            maxHeight = window.innerHeight;
-            maxWidth = window.innerWidth;
-        }
-        
-        function moveBox(e) {
-            if (!stopMove) {
-                if ((e.clientY - topBar.top) <= 0) {
-                    topBar.parentNode.style.top = 0;
-                } else if ((e.clientY - topBar.top) + parseInt(self.getStyle(topBar.parentNode, "height"), 10) < maxHeight) {
-				    topBar.parentNode.style.top = e.clientY - topBar.top + "px";
-                } else {
-                    topBar.parentNode.style.top = maxHeight - parseInt(self.getStyle(topBar.parentNode, "height"), 10) + "px";
-                }
-                if ((e.clientX - topBar.left) <= 0) {
-                    topBar.parentNode.style.left = 0;
-                } else if ((e.clientX - topBar.left) + parseInt(self.getStyle(topBar.parentNode, "width"), 10) < maxWidth) {
-				    topBar.parentNode.style.left = e.clientX - topBar.left + "px";
-                } else {
-                    topBar.parentNode.style.left = maxWidth - parseInt(self.getStyle(topBar.parentNode, "width"), 10) + "px";
-                }
-				
-			}
-        }
-        
-        function resizeBox(e) {
-            if (e.clientX <= maxWidth) {
-                topBar.parentNode.style.width = e.clientX - topBar.left + 5 + "px";
-            } else {
-                topBar.parentNode.style.width = maxWidth - topBar.left + "px";
-            }
-                
-            if (e.clientY <= maxHeight) {
-                topBar.parentNode.style.height = e.clientY - topBar.top + 5 + "px";
-            } else {
-                topBar.parentNode.style.height = maxHeight - topBar.top + "px";
-            }
-        }
-        
-        function mouseUp() {
-			window.removeEventListener('mousemove', moveBox, false);
-            window.removeEventListener('mousemove', resizeBox, false);
-			stopMove = false;
-		}
-		
-		function mouseDown(e) {
-            topBar.top = e.clientY - parseInt(self.getStyle(topBar.parentNode, "top"), 10);
-            topBar.left = e.clientX - parseInt(self.getStyle(topBar.parentNode, "left"), 10);
-            window.addEventListener("mousemove", moveBox, false);
-		}
-        
-        function mouseDownResize() {
-            topBar.top = parseInt(self.getStyle(topBar.parentNode, "top"), 10);
-            topBar.left = parseInt(self.getStyle(topBar.parentNode, "left"), 10);
-            window.addEventListener("mousemove", resizeBox, false);
-		}
-		
-		function mouseDownClose() {
-            stopMove = true;
-		}
-		
-		function moveUp() {
-            var zIndex;
-			self.selectByClass("floatingBoxBar").forEach(function (entry) {
-				zIndex = entry.parentNode.style.zIndex;
-				if ((zIndex === "") || (zIndex < 50)) {
-					zIndex = 50;
-				}
-				entry.parentNode.style.zIndex = zIndex - 1;
-			});
-			element.style.zIndex = 100;
-		}
-		
-        this.addClass("floatingBoxBar", topBar);
-        this.addEvent(topBar, "mousedown", mouseDown);
-        this.addEvent(window, 'mouseup', mouseUp);
-		
-		rightTopBar = document.createElement("div");
-		rightTopBar.style.float = "right";
-		text = document.createTextNode("Close");
-		rightTopBar.onclick = function () {
-			topBar.parentNode.style.display = "none";
-			stopMove = false;
-		};
-		rightTopBar.addEventListener("mousedown", mouseDownClose, false);
-		rightTopBar.appendChild(text);
-		
-		clearTopBar = document.createElement("div");
-		clearTopBar.style.clear = "both";
-		
-        if (element.getAttribute("data-windowTitle") !== null) {
-            leftTopBar = document.createElement("div");
-            leftTopBar.style.float = "left";
-            text = document.createTextNode(element.getAttribute("data-windowTitle"));
-            leftTopBar.appendChild(text);
-            topBar.appendChild(leftTopBar);
-        }
-		
-		topBar.appendChild(rightTopBar);
-		topBar.appendChild(clearTopBar);
-		
-        resize = document.createElement("div");
-        j.addClass("resize", resize);
-        
-        docFragment.appendChild(topBar);
-        docFragment.appendChild(resize);
-		element.insertBefore(docFragment, element.firstChild);
-        element.addEventListener("mousedown", moveUp, false);
-		
-        j.addEvent(resize, "mousedown", mouseDownResize);
-        
-		return element;
-    },
-	
-    showFloatingBox: function (element) {
-        var zIndex;
-		this.selectByClass("floatingBoxBar").forEach(function (entry) {
-			zIndex = entry.parentNode.style.zIndex;
-			if ((zIndex === "") || (zIndex < 50)) {
-				zIndex = 50;
-			}
-			entry.parentNode.style.zIndex = zIndex - 1;
-		});
-        element.style.display = "block";
-		element.style.zIndex = 100;
-	},
     
     getQueryParams: function () {
         /*jslint regexp:true */
@@ -682,44 +320,6 @@ var j = {
             }
         };
     },
-	
-    loadGoogleFont: function (fonts) {
-        var protocol, key;
-		protocol = ('https:' === document.location.protocol ? 'https' : 'http');
-        for (key in fonts) {
-            if (fonts.hasOwnProperty(key)) {
-                this.loadFile([{'fileName': protocol + "://fonts.googleapis.com/css?family=" + key + ":" + fonts[key], 'fileType': 'css'}]);
-            }
-            
-        }
-	},
-    
-    loadFont: function (fonts) {
-        var styleElement = document.createElement("style");
-        styleElement.setAttribute("type", "text/css");
-        if (fonts.light !== undefined) {
-            styleElement.innerHTML += "@font-face{\nfont-family: '" + fonts.name + "';\nfont-weight:300;\nsrc: url(";
-            if (fonts.light.otf !== undefined) {
-                styleElement.innerHTML += "fonts/" + fonts.light.otf + ");";
-            }
-            styleElement.innerHTML += "\n}\n";
-        }
-        if (fonts.normal !== undefined) {
-            styleElement.innerHTML += "@font-face{\nfont-family: '" + fonts.name + "';\nfont-weight:400;\nsrc: url(";
-            if (fonts.normal.otf !== undefined) {
-                styleElement.innerHTML += "fonts/" + fonts.normal.otf + ");";
-            }
-            styleElement.innerHTML += "\n}\n";
-        }
-        if (fonts.bold !== undefined) {
-            styleElement.innerHTML += "@font-face{\nfont-family: '" + fonts.name + "';\nfont-weight:700;\nsrc: url(";
-            if (fonts.bold.otf !== undefined) {
-                styleElement.innerHTML += "fonts/" + fonts.bold.otf + ");";
-            }
-            styleElement.innerHTML += "\n}\n";
-        }
-        this.selectByTag("head")[0].appendChild(styleElement);
-	},
     
     isMobile: function () {
         var agent;
@@ -777,128 +377,5 @@ var j = {
         }
         xmlhttp.send();
 		
-	},
-    
-    strip: function (html) {
-        var tmp = document.createElement("DIV");
-        tmp.innerHTML = html.replace("\\n", " ");
-        return tmp.textContent || tmp.innerText || "";
-    },
-    
-    share: function (element) {
-        var params = {};
-        params.url = element.getAttribute("data-url");
-        params.image = element.getAttribute("data-image");
-        params.title = element.getAttribute("data-title");
-        params.summary = element.getAttribute("data-summary");
-        params.shareType = element.getAttribute("data-share-type");
-        params.imgTitle = element.getAttribute("data-image-title");
-        params.width = element.getAttribute("data-image-width");
-        params.height = element.getAttribute("data-image-height");
-        params.socialTarget = element.getAttribute("data-type");
-        this.socialShare.publish(params);
-        
-    },
-    
-    socialShare: {
-        publish: function (params) {
-            var link, windowParams;
-            if (params.socialTarget === "facebook") {
-                link = "https://www.facebook.com/sharer/sharer.php?s=100&p[url]=" + params.url + "&p[images][0]=" + encodeURIComponent(params.image) + "&p[title]=" + encodeURIComponent(params.title) + "&p[summary]=" + encodeURIComponent(j.strip(params.summary));
-            } else if (params.socialTarget === "twitter") {
-                link = "http://twitter.com/share?text=" + encodeURIComponent(j.strip(params.summary)) + "&url=" + params.url;
-            } else if (params.socialTarget === "linkedin") {
-                link = "http://www.linkedin.com/shareArticle?mini=true&url=" + params.url + "&title=" + params.title + "&summary=" + j.strip(params.summary);
-            } else if (params.socialTarget === "googleplus") {
-                link = "https://plus.google.com/share?url=" + params.url;
-            } else if (params.socialTarget === "googlebookmark") {
-                link = "http://www.google.com/bookmarks/mark?op=edit&bkmk=" + params.url + "&title=" + params.title + "&annotation=" + params.summary;
-            } else if (params.socialTarget === "pinterest") {
-                link = "http://pinterest.com/pin/create/button/?url=" + params.url + "&media=" + encodeURIComponent(params.image) + "&description=" + params.summary;
-            } else if (params.socialTarget === "tumblr") {
-                if (params.sharetype === "photo") {
-                    link = "http://www.tumblr.com/share/photo?source=" + encodeURIComponent(params.image) + "&caption=" + params.summary + "&click_thru=" + encodeURIComponent(params.url);
-                } else {
-                    link = "http://www.tumblr.com/share/link?url=" + encodeURIComponent(params.url) + "&name=" + params.title + "&description=" + params.summary;
-                }
-            } else if (params.socialTarget === "delicious") {
-                link = "http://delicious.com/post?url=" + params.url + "&title=" + params.title + "&notes=" + params.summary;
-            } else if (params.socialTarget === "reddit") {
-                link = "http://www.reddit.com/submit?url=" + params.url + "&title=" + params.title;
-            } else if (params.socialTarget === "tapiture") {
-                link = "http://tapiture.com/bookmarklet/image?img_src=" + params.image + "&page_url=" + params.url + "&page_title=" + params.title + "&img_title=" + params.imgTitle + "&img_width=" + params.width + "img_height=" + params.height;
-            } else if (params.socialTarget === "stumbleupon") {
-                link = "http://www.stumbleupon.com/submit?url=" + params.url + "&title=" + params.title;
-            } else if (params.socialTarget === "newsvine") {
-                link = "http://www.newsvine.com/_tools/seed&save?u=" + params.url + "&h=" + params.title;
-            }
-            if (link !== "") {
-                windowParams = "";
-                if (params.socialTarget === "tumblr") {
-                    windowParams = "toolbar=0,status=0,width=800,height=500";
-                } else if (params.socialTarget === "googleplus") {
-                    windowParams = "toolbar=0,status=0,width=600,height=600";
-    
-                } else {
-                    windowParams = "toolbar=0,status=0,width=626,height=436";
-                }
-                window.open(link, 'sharer', windowParams);
-            }
-        },
-        setTheme: function (targetElements, path, theme, invertTheme) {
-            function imagesManager() {
-                var elems = j.selectByTag('a'), i, images;
-                function MouseOverNoTheme() {
-                    this.getElementsByTagName('img')[0].src = this.getAttribute("data-image-button-over");
-                }
-                function MouseOutNoTheme() {
-                    this.getElementsByTagName('img')[0].src = this.getAttribute("data-image-button");
-                }
-                function MouseOverTheme() {
-                    if (invertTheme === true) {
-                        this.getElementsByTagName('img')[0].src = path + this.getAttribute("data-type") + ".png";
-                    } else {
-                        this.getElementsByTagName('img')[0].src = path + this.getAttribute("data-type") + "over.png";
-                    }
-                }
-                function MouseOutTheme() {
-                    if (invertTheme === true) {
-                        this.getElementsByTagName('img')[0].src = path + this.getAttribute("data-type") + "over.png";
-                    } else {
-                        this.getElementsByTagName('img')[0].src = path + this.getAttribute("data-type") + ".png";
-                    }
-                    
-                }
-                if (path === "") {
-                    for (i = 0; i < elems.length; i = i + 1) {
-                        if (j.hasClass(targetElements, elems[i])) {
-                            elems[i].getElementsByTagName('img')[0].src = elems[i].getAttribute("data-image-button");
-                            elems[i].onmouseover = MouseOverNoTheme;
-                            elems[i].onmouseout = MouseOutNoTheme;
-                        }
-                    }
-                } else {
-                    path = path + "/" + theme + "/";
-                    images = [];
-                    for (i = 0; i < elems.length; i = i + 1) {
-                        if (j.hasClass(targetElements, elems[i])) {
-                            images.push(new Image());
-                            if (invertTheme === true) {
-                                images[images.length - 1].src = path + elems[i].getAttribute("data-type") + ".png";
-                                elems[i].getElementsByTagName('img')[0].src = path + elems[i].getAttribute("data-type") + "over.png";
-                                elems[i].onmouseover = MouseOverTheme;
-                                elems[i].onmouseout = MouseOutTheme;
-                            } else {
-                                images[images.length - 1].src = path + elems[i].getAttribute("data-type") + "over.png";
-                                elems[i].getElementsByTagName('img')[0].src = path + elems[i].getAttribute("data-type") + ".png";
-                                elems[i].onmouseover = MouseOverTheme;
-                                elems[i].onmouseout = MouseOutTheme;
-                            }
-                        }
-                    }
-                }
-            }
-            imagesManager();
-        }
-    }
+	}
 };
