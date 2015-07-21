@@ -75,11 +75,6 @@ var j = {
 	},
     
     onDomReady: function (fn) {
-        function fnWrapper() {
-            if (document.readyState === "complete") {
-                fn();
-            }
-        }
         if (document.readyState === "complete") {
             fn();
         }
@@ -116,7 +111,7 @@ var j = {
 
     selectByClass: function (element, scope) {
         
-        var result = [], elements, i, nodeList;
+        var result = [], i, nodeList;
         
         if (scope === undefined) {
             scope = document;
@@ -349,7 +344,6 @@ var j = {
 		}
 		xmlhttp.send();
 	},
-    
     
     post: function (target, callback, options) {
         var xmlhttp;
